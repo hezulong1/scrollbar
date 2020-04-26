@@ -5,12 +5,14 @@ export function isFunction(fn) {
 export function isNode(node) {
   return node && node.nodeType === 1 && typeof node.nodeName === 'string';
 }
-const userAgent = navigator.userAgent;
+const userAgent = navigator.userAgent.toLowerCase();
 
-export const isFirefox = (userAgent.indexOf('Firefox') >= 0);
-export const isPad = userAgent.match(/(iPad).*OS\s([\d_]+)/);
-export const isPhone = !isPad && userAgent.match(/(iPhone\sOS)\s([\d_]+)/);
-export const isAndroid = userAgent.match(/(Android)\s+([\d.]+)/);
+export const isFirefox = (userAgent.indexOf('firefox') >= 0);
+export const isAndroid = (userAgent.indexOf('android') >= 0);
+export const isOS = /(iphone|ipad|ipod|ios)/.test(userAgent);
+export const isWindowsPhone = (userAgent.indexOf('windows phone') >= 0);
+export const isSymbianos = (userAgent.indexOf('symbianos') >= 0);
+export const isMobile = isAndroid || isOS || isWindowsPhone || isSymbianos;
 
 export function getDeviceScaleRadio() {
   let ratio = 0;
@@ -18,7 +20,7 @@ export function getDeviceScaleRadio() {
 
   if (window.devicePixelRatio !== undefined) {
     ratio = window.devicePixelRatio;
-  } else if (~userAgent.toLowerCase().indexOf('msie')) {
+  } else if (~userAgent.indexOf('msie')) {
     if (screen.deviceXDPI && screen.logicalXDPI) {
       ratio = screen.deviceXDPI / screen.logicalXDPI;
     }

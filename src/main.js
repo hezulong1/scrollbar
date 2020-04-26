@@ -2,7 +2,7 @@
 
 import './style.less';
 
-import { merge, getScrollbarWidth, addClass, removeClass, cancelBubble, isFunction, isNode, isFirefox, isAndroid, isPhone, isPad } from './utils';
+import { merge, getScrollbarWidth, addClass, removeClass, cancelBubble, isFunction, isNode, isFirefox, isMobile } from './utils';
 import { addListener as addResizeListener, removeListener as removeResizeListener } from './resize-detector';
 import { GlobalName, CLASSNAMES } from './const';
 
@@ -35,7 +35,7 @@ class Scrollbar {
     // 记录值
     this._events = {};
     this._scrollbarWidth = getScrollbarWidth();
-    this._preventRenderTrack = (isAndroid || isPad || isPhone) && this.forceRenderTrack === false && this._scrollbarWidth === 0;
+    this._preventRenderTrack = isMobile && this.forceRenderTrack === false && this._scrollbarWidth === 0;
     this._created = false;
     this._cursorDown = false;
     // 变化值
