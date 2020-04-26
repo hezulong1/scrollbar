@@ -1,0 +1,33 @@
+{
+  "name": "ui-scrollbar",
+  "version": "0.0.1",
+  "main": "index.js",
+  "unpkg": "index.js",
+  "module": "src/main.js",
+  "less": "src/style.less",
+  "stylus": "src/style.styl",
+  "scss": "src/style.scss",
+  "style": "style.css",
+  "scripts": {
+    "dev": "rollup -c -w",
+    "build": "rollup -c",
+    "demo:dev": "rollup -c rollup.website.js -w",
+    "prepare": "npm run build"
+  },
+  "author": "hezulong1 <https://github.com/hezulong1>",
+  "license": "MIT",
+  "devDependencies": {
+    "@rollup/plugin-buble": "^0.21.3",
+    "@rollup/plugin-json": "^4.0.2",
+    "autoprefixer": "^9.7.6",
+    "less": "^3.11.1",
+    "rollup": "^2.6.1",
+    "rollup-plugin-postcss": "^2.9.0",
+    "rollup-plugin-uglify": "^6.0.4"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
+  ]
+}

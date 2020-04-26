@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>UiScrollbar</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+      body {
+        margin: 0;
+        background-color: #282c34;
+        color: #abb2bf;
+        font-family: "Fira Code", "Source Code Pro", Consolas, "Courier New", monospace;
+      }
+      
+      html {
+        height: 100%;
+      }
+
+      /* ::-webkit-scrollbar {
+        width: 0;
+        height: 0;
+      } */
+    </style>
+  </head>
+  
+  <body>
+    <button type="button" onclick="create()">create</button>
+    <button type="button" onclick="destroy()">destroy</button>
+    <button type="button" onclick="goTop()">top</button>
+    <button type="button" onclick="doHide()">hide</button>
+    <button type="button" onclick="doBigger()">bigger</button>
+    <br>
+
+    <div id="scrollable-element" style="width: 450px; height: 320px; border: 2px solid #000; margin: 20px">
+      <div id="inner" style="overflow: auto; width: 380px; height: 200px; border-bottom: 2px solid #000;border-right: 2px solid #000;"></div>
+    </div>
+
+    <br>
+    <button type="button" onclick="create()">create</button>
+    <button type="button" onclick="destroy()">destroy</button>
+    <button type="button" onclick="goTop()">top</button>
+    <button type="button" onclick="doHide()">hide</button>
+    <button type="button" onclick="doBigger()">bigger</button>
+    
+    <script src="./index.js"></script>
+    <script>
+      var element = document.getElementById('scrollable-element');
+      var render = function(line) {
+        var html = '';
+        var i = -1;
+        while(++i < line) {
+          html += '<p style="min-width: 451px;">' + i + '. Lorem ipsum, dolor sit amet consectetur adipisicing elit. Magnam, molestias eum, dolorum corporis vel alias maiores delectus ullam ipsam provident ea, eligendi sequi totam earum. Sequi debitis delectus asperiores eveniet!</p>'
+        }
+
+        element.querySelector('div').innerHTML = html;
+
+        element.innerHTML += html;
+      }
+      render(10)
+
+
+      
+      var scrollbar = new Scrollbar({
+        element: element,
+        onResize: function() {
+          console.log(new Date())
+        }
+      }).create()
+
+
+      new Scrollbar({
+        useShadow: true,
+        element: element.querySelector('#inner')
+      }).create()
+
+      var isHide = false;
+      function doHide() {
+        var p = element.querySelectorAll('p');
+
+        isHide = !isHide;
+
+        [].slice.call(p).forEach(function(item, index) {
+          if (index >= 5 && index < 9) {
+            item.style.display = isHide ? 'none' : '';
+          }
+          
+        })
+      }
+      
+      function doBigger() {
+        element.querySelector('p').style.width = (parseInt(Math.random() * 1000) + 451) + 'px';
+      }
+      
+      function create() {
+        scrollbar.create()
+      }
+
+      function destroy() {
+        scrollbar.destroy()
+      }
+
+      function goTop() {
+        scrollbar.getViewElement().scrollTop = 0;
+      }
+    </script>
+  </body>
+</html>
+
