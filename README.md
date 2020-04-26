@@ -2,6 +2,8 @@
 
 一款基于 [gemini-scrollbar](https://github.com/noeldelgado/gemini-scrollbar) 的虚拟滚动条。
 
+[demo](http://blog.hezulong.com/scrollbar/website/)
+
 ## 新特性
 
 - 兼容横向滚动（shirt 键触发）
