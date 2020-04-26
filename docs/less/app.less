@@ -1,7 +1,11 @@
 // @import (inline) '../../node_modules/sanitize.css/dist/sanitize.css';
-@import (once) '_base';
-@import (inline) "../../style.css";
+@import '_base';
+@import '../../src/style';
 @import '_code';
+
+*, *:before, *:after {
+  box-sizing: border-box;
+}
 
 html {
   height: 100%;
@@ -695,5 +699,13 @@ h2 {
 
   .shadow.is-horizontal.is-visible {
     box-shadow: none;
+  }
+}
+
+
+@media (max-width: 500px) {
+  .page-wrapper {
+    max-width: none;
+    padding: 85px 20px 0 20px;
   }
 }

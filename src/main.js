@@ -18,7 +18,7 @@ class Scrollbar {
     // 配置
     this.horizontal = false; // 启用滚动反转，默认关闭
     this.minThumbSize = 20; // 滚动滑块最小长度
-    this.forceRenderTrack = true; // 启用强制渲染虚拟滚动条，原始滚动条宽度为 0，则不渲染虚拟滚动条，默认开启
+    this.forceRenderTrack = true; // 启用强制渲染虚拟滚动条（仅在 PC 端有效），原始滚动条宽度为 0，则不渲染虚拟滚动条，默认开启
     this.useRender = true; // 启用渲染模式，默认打开渲染默认，关闭需要手动渲染
     this.useResize = true; // 启用监听模式，默认值根据滚动条宽度是否大于0
     this.useShadow = false; // 启用阴影模式，默认关闭
@@ -35,7 +35,7 @@ class Scrollbar {
     // 记录值
     this._events = {};
     this._scrollbarWidth = getScrollbarWidth();
-    this._preventRenderTrack = isMobile && this.forceRenderTrack === false && this._scrollbarWidth === 0;
+    this._preventRenderTrack = isMobile || (this.forceRenderTrack === false && this._scrollbarWidth === 0);
     this._created = false;
     this._cursorDown = false;
     // 变化值

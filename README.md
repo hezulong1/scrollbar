@@ -2,7 +2,7 @@
 
 一款基于 [gemini-scrollbar](https://github.com/noeldelgado/gemini-scrollbar) 的虚拟滚动条。
 
-[demo](http://blog.hezulong.com/scrollbar/website/)
+[demo](http://blog.hezulong.com/scrollbar)
 
 ## 新特性
 
@@ -23,7 +23,7 @@
 - esm:
 
 ```javascript
-import Scrollbar from 'ui-scrollbar';
+import Scrollbar from 'fake/path';
 
 new Scrollbar(options)
 ```
@@ -31,11 +31,11 @@ new Scrollbar(options)
 - browser:
 
 ```html
-<script src="your/path/ui.scrollbar.min.js"></script>
+<script src="fake/path"></script>
 
 <script>
-// 全局注入 UiScrollbar
-new UiScrollbar(options)
+// 全局注入 Scrollbar
+new Scrollbar(options)
 </script>
 ```
 
@@ -46,7 +46,7 @@ new UiScrollbar(options)
 | `element` | `HTMLElement` | 宿主，必填 | `null` |
 | `horizontal` | `Boolean` | 水平滚动 | `false` |
 | `minThumbSize` | `Number` | 最小滚动滑块宽度 | `20` |
-| `forceRenderTrack` | `Boolean` | 强制渲染滚动条 | 默认情况当原始滚动条宽度为 `0`，不渲染虚拟滚动条 |
+| `forceRenderTrack` | `Boolean` | 强制渲染滚动条（仅在 PC 浏览器访问有效）| 默认情况当原始滚动条宽度为 `0`，不渲染虚拟滚动条 |
 | `useRender` | `Boolean` | 启用渲染模式，默认打开渲染默认，关闭需要手动渲染 | `false` |
 | `useResize` | `Boolean` | 启用监听模式，默认值根据滚动条宽度是否大于 `0` | `true` |
 | `useShadow` | `Boolean` | 启用阴影模式，即当滚动条不在最上方或者最右侧则顶部或者右侧出现阴影效果，默认关闭 | `false` |
