@@ -730,7 +730,7 @@
     this._events.mouseUpDocumentHandler = this._mouseUpDocumentHandler.bind(this);
     this._events.mouseMoveDocumentHandler = this._mouseMoveDocumentHandler.bind(this);
 
-    if (this.horizontal) {
+    if (!isMobile && this.horizontal) {
       this.$view.addEventListener(WHEEL, this._events.mouseScrollTrackHandler);
     } else {
       this.$view.addEventListener('scroll', this._events.scrollHandler);
@@ -787,7 +787,7 @@
   };
 
   Scrollbar.prototype._setShadowStyle = function _setShadowStyle () {
-    if (this.$view.scrollTop === 0) {
+    if (this.$view.scrollTop <= 0) {
       removeClass(this.$shadowY, CLASSNAMES.visible);
       addClass(this.$shadowY, CLASSNAMES.invisible);
     } else {
@@ -795,7 +795,7 @@
       removeClass(this.$shadowY, CLASSNAMES.invisible);
     }
 
-    if (this.$view.scrollLeft === this.$view.scrollWidth - this.$view.clientWidth) {
+    if (this.$view.scrollLeft >= this.$view.scrollWidth - this.$view.clientWidth) {
       removeClass(this.$shadowX, CLASSNAMES.visible);
       addClass(this.$shadowX, CLASSNAMES.invisible);
     } else {
@@ -935,13 +935,19 @@
     useRender: false
   }).create();
 
-  new Scrollbar(document.querySelector('.ex0 .content')).create();
+  new Scrollbar({
+    element: document.querySelector('.ex0 .content')
+  }).create();
 
-  new Scrollbar(document.querySelector('.ex1 .list-container')).create();
+  new Scrollbar({
+    element         : document.querySelector('.ex1 .list-container'),
+    forceRenderTrack: false
+  }).create();
 
   new Scrollbar({
     element   : document.querySelector('.ex2 .code'),
-    horizontal: true
+    horizontal: true,
+    useShadow : true
   }).create();
 
   new Scrollbar({
@@ -949,14 +955,14 @@
   }).create();
 
   new Scrollbar({
-    element: document.querySelector('.ex4 .manilla')
+    element  : document.querySelector('.ex4 .manilla'),
+    useShadow: true
   }).create();
 
   new Scrollbar(document.querySelector('.ex5 .sample')).create();
 
   new Scrollbar({
-    element         : document.querySelector('.ex6 .sample'),
-    forceRenderTrack: false
+    element: document.querySelector('.ex6 .sample')
   }).create();
 
 }());

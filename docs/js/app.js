@@ -6,13 +6,19 @@ new Scrollbar({
   useRender: false
 }).create();
 
-new Scrollbar(document.querySelector('.ex0 .content')).create();
+new Scrollbar({
+  element: document.querySelector('.ex0 .content')
+}).create();
 
-new Scrollbar(document.querySelector('.ex1 .list-container')).create();
+new Scrollbar({
+  element         : document.querySelector('.ex1 .list-container'),
+  forceRenderTrack: false
+}).create();
 
 new Scrollbar({
   element   : document.querySelector('.ex2 .code'),
-  horizontal: true
+  horizontal: true,
+  useShadow : true
 }).create();
 
 new Scrollbar({
@@ -20,12 +26,12 @@ new Scrollbar({
 }).create();
 
 new Scrollbar({
-  element: document.querySelector('.ex4 .manilla')
+  element  : document.querySelector('.ex4 .manilla'),
+  useShadow: true
 }).create();
 
 new Scrollbar(document.querySelector('.ex5 .sample')).create();
 
 new Scrollbar({
-  element         : document.querySelector('.ex6 .sample'),
-  forceRenderTrack: false
+  element: document.querySelector('.ex6 .sample')
 }).create();

@@ -434,6 +434,7 @@ h2 {
     box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.5);
     width: 12px;
     border-radius: 6px;
+    opacity: 1;
 
     &.is-horizontal {
       display: none;
@@ -512,6 +513,9 @@ h2 {
 /* EXAMPLE 04 */
 .ex4 {
   /* custom scrollbar */
+  .scrollbar {
+    opacity: 1;
+  }
   .scrollbar.is-vertical {
     top: 0;
     right: 0;
@@ -524,6 +528,16 @@ h2 {
     .thumb {
       border-radius: 3px;
     }
+  }
+
+  .shadow.is-vertical {
+    height: 20px;
+    backdrop-filter: blur(1px);
+  }
+
+  .shadow.is-vertical.is-visible {
+    box-shadow: none;
+    background-image: linear-gradient(180deg,rgba(0,0,0,.1),transparent);
   }
 
   .container {

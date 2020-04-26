@@ -295,7 +295,7 @@ class Scrollbar {
     this._events.mouseUpDocumentHandler = this._mouseUpDocumentHandler.bind(this);
     this._events.mouseMoveDocumentHandler = this._mouseMoveDocumentHandler.bind(this);
 
-    if (this.horizontal) {
+    if (!isMobile && this.horizontal) {
       this.$view.addEventListener(WHEEL, this._events.mouseScrollTrackHandler);
     } else {
       this.$view.addEventListener('scroll', this._events.scrollHandler);
@@ -352,7 +352,7 @@ class Scrollbar {
   }
 
   _setShadowStyle() {
-    if (this.$view.scrollTop === 0) {
+    if (this.$view.scrollTop <= 0) {
       removeClass(this.$shadowY, CLASSNAMES.visible);
       addClass(this.$shadowY, CLASSNAMES.invisible);
     } else {
@@ -360,7 +360,7 @@ class Scrollbar {
       removeClass(this.$shadowY, CLASSNAMES.invisible);
     }
 
-    if (this.$view.scrollLeft === this.$view.scrollWidth - this.$view.clientWidth) {
+    if (this.$view.scrollLeft >= this.$view.scrollWidth - this.$view.clientWidth) {
       removeClass(this.$shadowX, CLASSNAMES.visible);
       addClass(this.$shadowX, CLASSNAMES.invisible);
     } else {
