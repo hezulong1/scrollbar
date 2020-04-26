@@ -11,9 +11,12 @@
   function isNode(node) {
     return node && node.nodeType === 1 && typeof node.nodeName === 'string';
   }
-  var userAgent = navigator.userAgent.toLowerCase();
+  var userAgent = navigator.userAgent;
 
-  var isFirefox = (userAgent.indexOf('firefox') >= 0);
+  var isFirefox = (userAgent.indexOf('Firefox') >= 0);
+  var isPad = userAgent.match(/(iPad).*OS\s([\d_]+)/);
+  var isPhone = !isPad && userAgent.match(/(iPhone\sOS)\s([\d_]+)/);
+  var isAndroid = userAgent.match(/(Android)\s+([\d.]+)/);
 
   function merge() {
     var arguments$1 = arguments;
@@ -468,7 +471,7 @@
     // 记录值
     this._events = {};
     this._scrollbarWidth = getScrollbarWidth();
-    this._preventRenderTrack = this._scrollbarWidth === 0 && this.forceRenderTrack === false;
+    this._preventRenderTrack = (isAndroid || isPad || isPhone) && this.forceRenderTrack === false && this._scrollbarWidth === 0;
     this._created = false;
     this._cursorDown = false;
     // 变化值
