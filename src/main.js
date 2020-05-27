@@ -305,7 +305,7 @@ class Scrollbar {
     this._events.mouseMoveDocumentHandler = this._mouseMoveDocumentHandler.bind(this);
 
     if (!isMobile && this.horizontal) {
-      this.$view.addEventListener(WHEEL, this._events.mouseScrollTrackHandler, { passive: true });
+      this.$view.addEventListener(WHEEL, this._events.mouseScrollTrackHandler); // { passive: true }
     } else {
       this.$view.addEventListener('scroll', this._events.scrollHandler);
     }
@@ -315,8 +315,8 @@ class Scrollbar {
       this.$scrollbarY.addEventListener('mousedown', this._events.clickVerticalTrackHandler);
       this.$sliderX.addEventListener('mousedown', this._events.clickHorizontalThumbHandler);
       this.$sliderY.addEventListener('mousedown', this._events.clickVerticalThumbHandler);
-      this.$scrollbarX.addEventListener(WHEEL, this._events.mouseScrollTrackHandler, { passive: true });
-      this.$scrollbarY.addEventListener(WHEEL, this._events.mouseScrollTrackHandler, { passive: true });
+      this.$scrollbarX.addEventListener(WHEEL, this._events.mouseScrollTrackHandler);
+      this.$scrollbarY.addEventListener(WHEEL, this._events.mouseScrollTrackHandler);
       document.addEventListener('mouseup', this._events.mouseUpDocumentHandler);
     }
 
