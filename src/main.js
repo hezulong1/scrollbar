@@ -156,15 +156,6 @@ class Scrollbar {
       this.$view.style.width = '';
       this.$view.style.height = '';
     }
-    
-    // fix: 解决 max-height / max-width 问题
-    if (this.element.scrollWidth > this.element.offsetWidth) {
-      this.$view.style.width = `${this.element.offsetWidth + this._scrollbarWidth}px`
-    }
-
-    if (this.element.scrollHeight > this.element.offsetHeight) {
-      this.$view.style.height = `${this.element.offsetHeight + this._scrollbarWidth}px`
-    }
 
     removeClass(this.$scrollbarY, CLASSNAMES.invisible);
     removeClass(this.$scrollbarX, CLASSNAMES.invisible);

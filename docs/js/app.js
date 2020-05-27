@@ -6,6 +6,8 @@ new Scrollbar({
   useRender: false
 }).create();
 
+var pre = document.querySelector('.ex0 .content pre')
+pre.style.height = pre.offsetHeight + 'px'
 new Scrollbar({
   element: document.querySelector('.ex0 .content pre')
 }).create();
