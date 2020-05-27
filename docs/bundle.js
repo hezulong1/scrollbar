@@ -591,6 +591,15 @@
       this.$view.style.width = '';
       this.$view.style.height = '';
     }
+      
+    // fix: 解决 max-height / max-width 问题
+    if (this.element.scrollWidth > this.element.offsetWidth) {
+      this.$view.style.width = (this.element.offsetWidth + this._scrollbarWidth) + "px";
+    }
+
+    if (this.element.scrollHeight > this.element.offsetHeight) {
+      this.$view.style.height = (this.element.offsetHeight + this._scrollbarWidth) + "px";
+    }
 
     removeClass(this.$scrollbarY, CLASSNAMES.invisible);
     removeClass(this.$scrollbarX, CLASSNAMES.invisible);
@@ -621,7 +630,7 @@
     this._trackTopMax = this.$scrollbarY.clientHeight - this.$sliderY.offsetHeight;
     this._trackLeftMax = this.$scrollbarX.clientWidth - this.$sliderX.offsetWidth;
 
-    isFunction(this.onUpdate) && this.onUpdate();
+    isFunction(this.onUpdate) && this.onUpdate.call(this);
 
     this._scrollHandler();
     return this;
@@ -717,7 +726,7 @@
       this._scrollbarWidth = getScrollbarWidth() / ratio;
     }
     this.update();
-    isFunction(this.onResize) && this.onResize();
+    isFunction(this.onResize) && this.onResize.call(this);
   };
 
   Scrollbar.prototype._bindEvents = function _bindEvents () {
@@ -731,7 +740,7 @@
     this._events.mouseMoveDocumentHandler = this._mouseMoveDocumentHandler.bind(this);
 
     if (!isMobile && this.horizontal) {
-      this.$view.addEventListener(WHEEL, this._events.mouseScrollTrackHandler);
+      this.$view.addEventListener(WHEEL, this._events.mouseScrollTrackHandler, { passive: true });
     } else {
       this.$view.addEventListener('scroll', this._events.scrollHandler);
     }
@@ -741,8 +750,8 @@
       this.$scrollbarY.addEventListener('mousedown', this._events.clickVerticalTrackHandler);
       this.$sliderX.addEventListener('mousedown', this._events.clickHorizontalThumbHandler);
       this.$sliderY.addEventListener('mousedown', this._events.clickVerticalThumbHandler);
-      this.$scrollbarX.addEventListener(WHEEL, this._events.mouseScrollTrackHandler);
-      this.$scrollbarY.addEventListener(WHEEL, this._events.mouseScrollTrackHandler);
+      this.$scrollbarX.addEventListener(WHEEL, this._events.mouseScrollTrackHandler, { passive: true });
+      this.$scrollbarY.addEventListener(WHEEL, this._events.mouseScrollTrackHandler, { passive: true });
       document.addEventListener('mouseup', this._events.mouseUpDocumentHandler);
     }
 
@@ -782,8 +791,8 @@
       this.$sliderY.style.webkitTransform = "translate3d(0, " + y + "px, 0)";
       this.$sliderY.style.transform = "translate3d(0, " + y + "px, 0)";
     }
-
-    isFunction(this.onScroll) && this.onScroll(x, y);
+    // perf: 传入真实的 scrollTop / scrollLeft
+    isFunction(this.onScroll) && this.onScroll.call(this, this.$view.scrollTop, this.$view.scrollLeft);
   };
 
   Scrollbar.prototype._setShadowStyle = function _setShadowStyle () {
@@ -936,7 +945,7 @@
   }).create();
 
   new Scrollbar({
-    element: document.querySelector('.ex0 .content')
+    element: document.querySelector('.ex0 .content pre')
   }).create();
 
   new Scrollbar({

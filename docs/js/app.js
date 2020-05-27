@@ -7,7 +7,7 @@ new Scrollbar({
 }).create();
 
 new Scrollbar({
-  element: document.querySelector('.ex0 .content')
+  element: document.querySelector('.ex0 .content pre')
 }).create();
 
 new Scrollbar({
