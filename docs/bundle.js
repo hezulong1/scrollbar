@@ -792,7 +792,7 @@
       this.$sliderY.style.transform = "translate3d(0, " + y + "px, 0)";
     }
     // perf: 传入真实的 scrollTop / scrollLeft
-    isFunction(this.onScroll) && this.onScroll.call(this, this.$view.scrollTop, this.$view.scrollLeft);
+    isFunction(this.onScroll) && this.onScroll.call(this, this.$view.scrollLeft, this.$view.scrollTop);
   };
 
   Scrollbar.prototype._setShadowStyle = function _setShadowStyle () {
