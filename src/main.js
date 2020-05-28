@@ -186,7 +186,7 @@ class Scrollbar {
     this._trackTopMax = this.$scrollbarY.clientHeight - this.$sliderY.offsetHeight;
     this._trackLeftMax = this.$scrollbarX.clientWidth - this.$sliderX.offsetWidth;
 
-    isFunction(this.onUpdate) && this.onUpdate();
+    isFunction(this.onUpdate) && this.onUpdate.call(this);
 
     this._scrollHandler();
     return this;
@@ -282,7 +282,7 @@ class Scrollbar {
       this._scrollbarWidth = getScrollbarWidth() / ratio;
     }
     this.update();
-    isFunction(this.onResize) && this.onResize();
+    isFunction(this.onResize) && this.onResize.call(this);
   }
 
   _bindEvents() {
@@ -296,7 +296,7 @@ class Scrollbar {
     this._events.mouseMoveDocumentHandler = this._mouseMoveDocumentHandler.bind(this);
 
     if (!isMobile && this.horizontal) {
-      this.$view.addEventListener(WHEEL, this._events.mouseScrollTrackHandler);
+      this.$view.addEventListener(WHEEL, this._events.mouseScrollTrackHandler); // { passive: true }
     } else {
       this.$view.addEventListener('scroll', this._events.scrollHandler);
     }
@@ -347,8 +347,8 @@ class Scrollbar {
       this.$sliderY.style.webkitTransform = `translate3d(0, ${y}px, 0)`;
       this.$sliderY.style.transform = `translate3d(0, ${y}px, 0)`;
     }
-
-    isFunction(this.onScroll) && this.onScroll(x, y);
+    // perf: 传入真实的 scrollTop / scrollLeft
+    isFunction(this.onScroll) && this.onScroll.call(this, this.$view.scrollLeft, this.$view.scrollTop);
   }
 
   _setShadowStyle() {
