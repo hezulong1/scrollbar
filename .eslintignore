@@ -1,6 +1,4 @@
 node_modules
-src/js/extends
-src/js/core
-!src/js/core/view.js
-*.eslintrc.js
 src/**/*.html
+index.js
+*.eslintrc.js
