@@ -161,7 +161,7 @@ class Scrollbar {
     const padding = getComputedStyle(this.element, 'padding');
     if (!padding.split(' ').every(item => parseInt(item) === 0)) {
       this.$resizeObserver.style.padding = padding;
-      this.element.style.setProperty('padding', '0px', 'important');
+      this.element.style.cssText += ';padding: 0px !important;';
     }
 
     removeClass(this.$scrollbarY, CLASSNAMES.invisible);
