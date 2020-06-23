@@ -8,6 +8,7 @@
   "stylus": "src/style.styl",
   "scss": "src/style.scss",
   "style": "style.css",
+  "types": "index.d.ts",
   "scripts": {
     "dev": "rollup -c -w",
     "build": "rollup -c",
