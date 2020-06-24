@@ -2,9 +2,11 @@
 
 import './style.less';
 
-import { merge, getScrollbarWidth, addClass, removeClass, cancelBubble, getComputedStyle, isFunction, isNode, isFirefox, isMobile } from './utils';
+import { merge, getScrollbarWidth, addClass, removeClass, cancelBubble, getComputedStyle, isFunction, isNode, isFirefox, isMobile, requestAnimationFrame, cancelAnimationFrame } from './utils';
 import { addListener as addResizeListener, removeListener as removeResizeListener } from './resize-detector';
 import { GlobalName, CLASSNAMES } from './const';
+
+import scrollTo from './smooth-scroll';
 
 const WHEEL = 'onwheel' in document.body ? 'wheel' : document.onmousewheel !== undefined ? 'mousewheel' : 'DOMMouseScroll';
 
@@ -404,9 +406,45 @@ class Scrollbar {
       deltaY *= deltaY;
     }
 
-    this.$view.scrollTop += deltaY;
-    this.$view.scrollLeft += deltaX;
-    this.horizontal && this._scrollHandler();
+    // const newDeltaY = Math.max(0, this.$view.scrollTop + deltaY);
+    // const newDeltaX = Math.max(0, this.$view.scrollLeft + deltaX);
+
+    // scrollTo(this.$view, newDeltaY, { duration: 17, timingFunction: 'gradually' });
+    // scrollTo(this.$view, newDeltaX, { duration: 17, direction: 'horizontal' });
+
+    let stepX = 0;
+    let stepY = 0;
+    let __id;
+
+    if (Math.abs(deltaY) > 0 || Math.abs(deltaX) > 0) {
+      stepX = Math.abs(deltaX) / 10;
+      stepY = Math.abs(deltaY) / 10;
+    }
+
+    const smoothScrollHandler = () => {
+      if (stepX >= Math.abs(deltaX) && stepY >= Math.abs(deltaY)) {
+        cancelAnimationFrame(__id);
+      } else {
+        if (deltaY !== 0 && Math.abs(stepY) <= Math.abs(deltaY)) {
+          stepY += deltaY > 0 ? 10 : -10;
+          this.$view.scrollTop += deltaY > 0 ? 10 : -10;
+        }
+
+        if (deltaX !== 0 && Math.abs(stepX) <= Math.abs(deltaX)) {
+          stepX += deltaX > 0 ? 10 : -10;
+          this.$view.scrollLeft += deltaX > 0 ? 10 : -10;
+        }
+
+        this.horizontal && this._scrollHandler();
+
+        __id = requestAnimationFrame(smoothScrollHandler);
+      }
+    };
+    __id = requestAnimationFrame(smoothScrollHandler);
+
+    // this.$view.scrollTop += deltaY;
+    // this.$view.scrollLeft += deltaX;
+    // this.horizontal && this._scrollHandler();
   }
 
   _clickTrackHandler(vertical) {

@@ -21,7 +21,7 @@ export default {
       plugins : [autoprefixer()]
     }),
     json(),
-    buble(),
-    uglify()
+    buble()
+    // uglify()
   ]
 };

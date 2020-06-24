@@ -30,5 +30,8 @@
     "> 1%",
     "last 2 versions",
     "not ie <= 8"
-  ]
+  ],
+  "dependencies": {
+    "scroll-ease-efficient": "^1.0.5"
+  }
 }
