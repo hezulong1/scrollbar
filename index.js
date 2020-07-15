@@ -759,7 +759,7 @@
     this._events.mouseMoveDocumentHandler = this._mouseMoveDocumentHandler.bind(this);
 
     if (!isMobile && this.horizontal) {
-      this.$view.addEventListener(WHEEL, this._events.mouseScrollTrackHandler, supportPassive ? { capture: false, passive: passive } : false); // { passive: true }
+      this.$view.addEventListener(WHEEL, this._events.mouseScrollTrackHandler, supportPassive ? { capture: false, passive: false } : false); // { passive: true }
     } else {
       this.$view.addEventListener('scroll', this._events.scrollHandler);
     }
