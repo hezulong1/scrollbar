@@ -14,6 +14,22 @@ export const isWindowsPhone = (userAgent.indexOf('windows phone') >= 0);
 export const isSymbianos = (userAgent.indexOf('symbianos') >= 0);
 export const isMobile = isAndroid || isOS || isWindowsPhone || isSymbianos;
 
+export const supportPassive = (function() {
+  let _passive = false
+  try {
+    const opts = {}
+    Object.defineProperty(opts, 'passive', ({
+      get() {
+        _passive = true
+      }
+    }))
+    window.addEventListener('test-passive', null, opts)
+  } catch (e) {
+    _passive = false
+  }
+  return _passive
+})()
+
 export function getDeviceScaleRadio() {
   let ratio = 0;
   const screen = window.screen;

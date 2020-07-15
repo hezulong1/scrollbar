@@ -17,6 +17,22 @@
   var isSymbianos = (userAgent.indexOf('symbianos') >= 0);
   var isMobile = isAndroid || isOS || isWindowsPhone || isSymbianos;
 
+  var supportPassive = (function() {
+    var _passive = false;
+    try {
+      var opts = {};
+      Object.defineProperty(opts, 'passive', ({
+        get: function get() {
+          _passive = true;
+        }
+      }));
+      window.addEventListener('test-passive', null, opts);
+    } catch (e) {
+      _passive = false;
+    }
+    return _passive
+  })();
+
   function merge() {
     var arguments$1 = arguments;
 
@@ -442,6 +458,8 @@
 
   // reference https://github.com/noeldelgado/gemini-scrollbar/blob/master/index.js
 
+  // import scrollTo from './smooth-scroll';
+
   var WHEEL = 'onwheel' in document.body ? 'wheel' : document.onmousewheel !== undefined ? 'mousewheel' : 'DOMMouseScroll';
 
   var Scrollbar = function Scrollbar(options) {
@@ -453,7 +471,7 @@
     // 配置
     this.horizontal = false; // 启用滚动反转，默认关闭
     this.minThumbSize = 20; // 滚动滑块最小长度
-    this.forceRenderTrack = true; // 启用强制渲染虚拟滚动条（仅在 PC 端有效），当为 false 时候，原始滚动条宽度为 0，则不渲染虚拟滚动条，默认开启
+    this.forceRenderTrack = true; // 启用强制渲染虚拟滚动条（仅在 PC 端有效），原始滚动条宽度为 0，则不渲染虚拟滚动条，默认开启
     this.useRender = true; // 启用渲染模式，默认打开渲染默认，关闭需要手动渲染
     this.useResize = true; // 启用监听模式，默认值根据滚动条宽度是否大于0
     this.useShadow = false; // 启用阴影模式，默认关闭
@@ -738,7 +756,7 @@
     this._events.mouseMoveDocumentHandler = this._mouseMoveDocumentHandler.bind(this);
 
     if (!isMobile && this.horizontal) {
-      this.$view.addEventListener(WHEEL, this._events.mouseScrollTrackHandler); // { passive: true }
+      this.$view.addEventListener(WHEEL, this._events.mouseScrollTrackHandler, supportPassive ? { capture: false, passive: passive } : false); // { passive: true }
     } else {
       this.$view.addEventListener('scroll', this._events.scrollHandler);
     }
@@ -812,6 +830,7 @@
   };
 
   Scrollbar.prototype._mouseScrollTrackHandler = function _mouseScrollTrackHandler (e) {
+      var this$1 = this;
       var assign, assign$1;
 
     var deltaX = 0;
@@ -841,9 +860,37 @@
       deltaY *= deltaY;
     }
 
-    this.$view.scrollTop += deltaY;
-    this.$view.scrollLeft += deltaX;
-    this.horizontal && this._scrollHandler();
+    {
+      var stepX = 0;
+      var stepY = 0;
+      var _id;
+
+      if (Math.abs(deltaY) > 0 || Math.abs(deltaX) > 0) {
+        stepX = Math.abs(deltaX) / 10;
+        stepY = Math.abs(deltaY) / 10;
+      }
+
+      var smoothScrollHandler = function () {
+        if (stepX >= Math.abs(deltaX) && stepY >= Math.abs(deltaY)) {
+          cancelAnimationFrame(_id);
+        } else {
+          if (deltaY !== 0 && Math.abs(stepY) <= Math.abs(deltaY)) {
+            stepY += deltaY > 0 ? 10 : -10;
+            this$1.$view.scrollTop += deltaY > 0 ? 10 : -10;
+          }
+
+          if (deltaX !== 0 && Math.abs(stepX) <= Math.abs(deltaX)) {
+            stepX += deltaX > 0 ? 10 : -10;
+            this$1.$view.scrollLeft += deltaX > 0 ? 10 : -10;
+          }
+
+          this$1.horizontal && this$1._scrollHandler();
+
+          _id = requestAnimationFrame(smoothScrollHandler);
+        }
+      };
+      _id = requestAnimationFrame(smoothScrollHandler);
+    }
   };
 
   Scrollbar.prototype._clickTrackHandler = function _clickTrackHandler (vertical) {

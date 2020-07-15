@@ -20,6 +20,22 @@
   var isSymbianos = (userAgent.indexOf('symbianos') >= 0);
   var isMobile = isAndroid || isOS || isWindowsPhone || isSymbianos;
 
+  var supportPassive = (function() {
+    var _passive = false;
+    try {
+      var opts = {};
+      Object.defineProperty(opts, 'passive', ({
+        get: function get() {
+          _passive = true;
+        }
+      }));
+      window.addEventListener('test-passive', null, opts);
+    } catch (e) {
+      _passive = false;
+    }
+    return _passive
+  })();
+
   function merge() {
     var arguments$1 = arguments;
 
@@ -445,6 +461,8 @@
 
   // reference https://github.com/noeldelgado/gemini-scrollbar/blob/master/index.js
 
+  // import scrollTo from './smooth-scroll';
+
   var WHEEL = 'onwheel' in document.body ? 'wheel' : document.onmousewheel !== undefined ? 'mousewheel' : 'DOMMouseScroll';
 
   var Scrollbar = function Scrollbar(options) {
@@ -741,7 +759,7 @@
     this._events.mouseMoveDocumentHandler = this._mouseMoveDocumentHandler.bind(this);
 
     if (!isMobile && this.horizontal) {
-      this.$view.addEventListener(WHEEL, this._events.mouseScrollTrackHandler); // { passive: true }
+      this.$view.addEventListener(WHEEL, this._events.mouseScrollTrackHandler, supportPassive ? { capture: false, passive: passive } : false); // { passive: true }
     } else {
       this.$view.addEventListener('scroll', this._events.scrollHandler);
     }
@@ -845,45 +863,37 @@
       deltaY *= deltaY;
     }
 
-    // const newDeltaY = Math.max(0, this.$view.scrollTop + deltaY);
-    // const newDeltaX = Math.max(0, this.$view.scrollLeft + deltaX);
+    {
+      var stepX = 0;
+      var stepY = 0;
+      var _id;
 
-    // scrollTo(this.$view, newDeltaY, { duration: 17, timingFunction: 'gradually' });
-    // scrollTo(this.$view, newDeltaX, { duration: 17, direction: 'horizontal' });
-
-    var stepX = 0;
-    var stepY = 0;
-    var __id;
-
-    if (Math.abs(deltaY) > 0 || Math.abs(deltaX) > 0) {
-      stepX = Math.abs(deltaX) / 10;
-      stepY = Math.abs(deltaY) / 10;
-    }
-
-    var smoothScrollHandler = function () {
-      if (stepX >= Math.abs(deltaX) && stepY >= Math.abs(deltaY)) {
-        cancelAnimationFrame(__id);
-      } else {
-        if (deltaY !== 0 && Math.abs(stepY) <= Math.abs(deltaY)) {
-          stepY += deltaY > 0 ? 10 : -10;
-          this$1.$view.scrollTop += deltaY > 0 ? 10 : -10;
-        }
-
-        if (deltaX !== 0 && Math.abs(stepX) <= Math.abs(deltaX)) {
-          stepX += deltaX > 0 ? 10 : -10;
-          this$1.$view.scrollLeft += deltaX > 0 ? 10 : -10;
-        }
-
-        this$1.horizontal && this$1._scrollHandler();
-
-        __id = requestAnimationFrame(smoothScrollHandler);
+      if (Math.abs(deltaY) > 0 || Math.abs(deltaX) > 0) {
+        stepX = Math.abs(deltaX) / 10;
+        stepY = Math.abs(deltaY) / 10;
       }
-    };
-    __id = requestAnimationFrame(smoothScrollHandler);
 
-    // this.$view.scrollTop += deltaY;
-    // this.$view.scrollLeft += deltaX;
-    // this.horizontal && this._scrollHandler();
+      var smoothScrollHandler = function () {
+        if (stepX >= Math.abs(deltaX) && stepY >= Math.abs(deltaY)) {
+          cancelAnimationFrame(_id);
+        } else {
+          if (deltaY !== 0 && Math.abs(stepY) <= Math.abs(deltaY)) {
+            stepY += deltaY > 0 ? 10 : -10;
+            this$1.$view.scrollTop += deltaY > 0 ? 10 : -10;
+          }
+
+          if (deltaX !== 0 && Math.abs(stepX) <= Math.abs(deltaX)) {
+            stepX += deltaX > 0 ? 10 : -10;
+            this$1.$view.scrollLeft += deltaX > 0 ? 10 : -10;
+          }
+
+          this$1.horizontal && this$1._scrollHandler();
+
+          _id = requestAnimationFrame(smoothScrollHandler);
+        }
+      };
+      _id = requestAnimationFrame(smoothScrollHandler);
+    }
   };
 
   Scrollbar.prototype._clickTrackHandler = function _clickTrackHandler (vertical) {
