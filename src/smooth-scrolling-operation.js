@@ -47,6 +47,7 @@ function createComposed(a, b, cut) {
 function easeInCubic(t) {
   return Math.pow(t, 3);
 }
+
 function easeOutCubic(t) {
-  return 1 - easeInCubic(1 - t);
+  return 1 - easeInCubic(1 - t); // Math.pow(t - 1, 3) + 1 === 1 - Math.pow(1 - t, 3)
 }

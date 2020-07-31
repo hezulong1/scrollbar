@@ -188,10 +188,22 @@ export function createStyles(styleText) {
 }
 
 export function getComputedStyle(elem, prop, pseudo) {
+  // code from jQuery
+  //
+  // Support: IE <=11+ (trac-14150)
+  // In IE popup's `window` is the opener window which makes `window.getComputedStyle( elem )`
+  // break. Using `elem.ownerDocument.defaultView` avoids the issue.
+  var view = elem.ownerDocument.defaultView;
+
+  // `document.implementation.createHTMLDocument( "" )` has a `null` `defaultView`
+  // property; check `defaultView` truthiness to fallback to window in such a case.
+  if ( !view ) {
+    view = window;
+  }
   // for older versions of Firefox, `getComputedStyle` required
   // the second argument and may return `null` for some elements
   // when `display: none`
-  const computedStyle = window.getComputedStyle(elem, pseudo || null) || {
+  const computedStyle = view.getComputedStyle(elem, pseudo || null) || {
     display: 'none'
   };
 
