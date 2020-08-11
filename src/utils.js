@@ -22,7 +22,7 @@ export const supportPassive = (function () {
       // eslint-disable-next-line getter-return
       get() {
         _passive = true;
-      },
+      }
     });
     window.addEventListener('test-passive', null, opts);
   } catch (e) {
@@ -95,7 +95,7 @@ export const cancelBubble = function (event) {
   }
 };
 
-const trim = (str) => str.replace(/(^\s*)|(\s*$)/g, '');
+const trim = str => str.replace(/(^\s*)|(\s*$)/g, '');
 
 function hasClass(element, className) {
   if (!element || !className) return false;
@@ -215,7 +215,7 @@ export function getComputedStyle(elem, prop, pseudo) {
   // the second argument and may return `null` for some elements
   // when `display: none`
   const computedStyle = view.getComputedStyle(elem, pseudo || null) || {
-    display: 'none',
+    display: 'none'
   };
 
   return computedStyle[prop];
@@ -225,7 +225,7 @@ export function getRenderInfo(elem) {
   if (!document.documentElement.contains(elem)) {
     return {
       detached: true,
-      rendered: false,
+      rendered: false
     };
   }
 
@@ -234,7 +234,7 @@ export function getRenderInfo(elem) {
     if (getComputedStyle(current, 'display') === 'none') {
       return {
         detached: false,
-        rendered: false,
+        rendered: false
       };
     }
     current = current.parentNode;
@@ -242,6 +242,6 @@ export function getRenderInfo(elem) {
 
   return {
     detached: false,
-    rendered: true,
+    rendered: true
   };
 }

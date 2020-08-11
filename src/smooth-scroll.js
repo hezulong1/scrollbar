@@ -33,7 +33,7 @@ function scrollTo(ele, pos, options) {
     scrollHeight: ele.scrollHeight,
     scrollWidth: ele.scrollWidth,
     clientHeight: ele.clientHeight,
-    clientWidth: ele.clientWidth,
+    clientWidth: ele.clientWidth
   };
 
   const opt = options && typeof options === 'object' ? options : {};

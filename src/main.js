@@ -15,11 +15,11 @@ import {
   isMobile,
   requestAnimationFrame,
   cancelAnimationFrame,
-  supportPassive,
+  supportPassive
 } from './utils';
 import {
   addListener as addResizeListener,
-  removeListener as removeResizeListener,
+  removeListener as removeResizeListener
 } from './resize-detector';
 import { GlobalName, CLASSNAMES } from './const';
 
@@ -193,7 +193,7 @@ class Scrollbar {
 
     // fixed: padding
     const padding = getComputedStyle(this.element, 'padding');
-    if (!padding.split(' ').every((item) => parseInt(item) === 0)) {
+    if (!padding.split(' ').every(item => parseInt(item) === 0)) {
       this.$resizeObserver.style.padding = padding;
       this.element.style.cssText += ';padding: 0px !important;';
     }
@@ -251,7 +251,7 @@ class Scrollbar {
       CLASSNAMES.prevented,
       CLASSNAMES.hiddenDefault,
       CLASSNAMES.force,
-      CLASSNAMES.element,
+      CLASSNAMES.element
     ]);
 
     this._unbindEvents();
@@ -550,7 +550,7 @@ class Scrollbar {
   }
 
   _clickTrackHandler(vertical) {
-    return (e) => {
+    return e => {
       let offset;
       let thumbPositionPercentage;
 
@@ -576,7 +576,7 @@ class Scrollbar {
   }
 
   _clickThumbHandler(vertical) {
-    return (e) => {
+    return e => {
       cancelBubble(e);
 
       if (e.ctrlKey || e.button === 2) {

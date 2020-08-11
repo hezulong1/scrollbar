@@ -5,7 +5,7 @@ import {
   requestAnimationFrame,
   cancelAnimationFrame,
   getComputedStyle,
-  getRenderInfo,
+  getRenderInfo
 } from './utils';
 
 const css =
@@ -69,7 +69,7 @@ export function addListener(elem, callback) {
           attributes: true,
           childList: true,
           characterData: true,
-          subtree: true,
+          subtree: true
         });
         elem.__resize_mutation_observer__ = mo;
       }
@@ -129,7 +129,7 @@ function getUpdatedSize(elem) {
   if (offsetWidth !== width || offsetHeight !== height) {
     return {
       width: offsetWidth,
-      height: offsetHeight,
+      height: offsetHeight
     };
   }
   return null;
@@ -167,7 +167,7 @@ function runCallbacks(elem) {
   if (!elem || !elem.__resize_listeners__) {
     return;
   }
-  elem.__resize_listeners__.forEach((callback) => {
+  elem.__resize_listeners__.forEach(callback => {
     callback.call(elem, elem);
   });
 }
@@ -199,7 +199,7 @@ function initTriggers(elem) {
     triggers,
     expand,
     expandChild,
-    contract,
+    contract
   };
 
   resetTriggers(elem);
@@ -207,7 +207,7 @@ function initTriggers(elem) {
 
   elem.__resize_last__ = {
     width: elem.offsetWidth,
-    height: elem.offsetHeight,
+    height: elem.offsetHeight
   };
 }
 
@@ -220,7 +220,7 @@ function resetTriggers(elem) {
     offsetWidth: eow,
     offsetHeight: eoh,
     scrollWidth: esw,
-    scrollHeight: esh,
+    scrollHeight: esh
   } = expand;
 
   // batch write

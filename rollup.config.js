@@ -23,13 +23,13 @@ function serve() {
         ['run', 'start', '--', '--dev'],
         {
           stdio: ['ignore', 'inherit', 'inherit'],
-          shell: true,
+          shell: true
         }
       );
 
       process.on('SIGTERM', toExit);
       process.on('exit', toExit);
-    },
+    }
   };
 }
 
@@ -39,14 +39,14 @@ export default {
     file: `./index.js`,
     name: GlobalName,
     format: 'umd',
-    sourcemap: false,
+    sourcemap: false
   },
   plugins: [
     postcss({
       inject: false,
       extract: './style.css',
       minimize: true,
-      plugins: [autoprefixer()],
+      plugins: [autoprefixer()]
     }),
     json(),
     buble(),
@@ -54,6 +54,6 @@ export default {
     // the bundle has been generated
     !production && serve(),
     !production && livereload('docs'),
-    production && uglify(),
-  ],
+    production && uglify()
+  ]
 };

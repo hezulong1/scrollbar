@@ -14,7 +14,7 @@
     "build": "rollup -c",
     "demo:dev": "rollup -c rollup.website.js -w",
     "eslint": "eslint src --ext .js --fix",
-    "format": "prettier --write src & npm run eslint",
+    "format": "prettier --write src \"*.js\" \"!index.js\" & npm run eslint",
     "start": "sirv docs",
     "prepare": "npm run build"
   },

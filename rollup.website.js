@@ -8,16 +8,16 @@ export default {
   output: {
     file: `./docs/bundle.js`,
     format: 'iife',
-    sourcemap: false,
+    sourcemap: false
   },
   plugins: [
     postcss({
       inject: false,
       extract: './docs/bundle.css',
       minimize: true,
-      plugins: [autoprefixer()],
+      plugins: [autoprefixer()]
     }),
     json(),
-    buble(),
-  ],
+    buble()
+  ]
 };

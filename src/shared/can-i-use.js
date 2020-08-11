@@ -12,7 +12,7 @@ export const supportPassive = /* #PURE */ (function () {
       // eslint-disable-next-line getter-return
       get() {
         _passive = true;
-      },
+      }
     });
     window.addEventListener('test-passive', null, opts);
   } catch (e) {

@@ -17,5 +17,5 @@ export const CLASSNAMES = {
   active: 'is-active',
   force: 'is-force-render',
   hiddenDefault: 'is-hidden-default',
-  observed: 'is-observed',
+  observed: 'is-observed'
 };
