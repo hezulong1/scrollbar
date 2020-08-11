@@ -4,20 +4,20 @@ import postcss from 'rollup-plugin-postcss';
 import autoprefixer from 'autoprefixer';
 
 export default {
-  input : './docs/js/app.js',
+  input: './docs/js/app.js',
   output: {
-    file     : `./docs/bundle.js`,
-    format   : 'iife',
-    sourcemap: false
+    file: `./docs/bundle.js`,
+    format: 'iife',
+    sourcemap: false,
   },
   plugins: [
     postcss({
-      inject  : false,
-      extract : './docs/bundle.css',
+      inject: false,
+      extract: './docs/bundle.css',
       minimize: true,
-      plugins : [autoprefixer()]
+      plugins: [autoprefixer()],
     }),
     json(),
-    buble()
-  ]
+    buble(),
+  ],
 };

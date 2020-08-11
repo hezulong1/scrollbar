@@ -5,10 +5,10 @@ module.exports = {
   printWidth: 80,
   tabWidth: 2,
   useTabs: false,
-  // trailingComma: 'none',
-  // bracketSpacing: true,
-  // jsxBracketSameLine: false,
-  // vueIndentScriptAndStyle: false,
+  trailingComma: 'none',
+  bracketSpacing: true,
+  jsxBracketSameLine: false,
+  vueIndentScriptAndStyle: false,
   endOfLine: 'lf',
-  // arrowParens: 'avoid'
-}
+  arrowParens: 'avoid'
+};

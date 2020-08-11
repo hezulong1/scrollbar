@@ -9,47 +9,51 @@ import livereload from 'rollup-plugin-livereload';
 const production = !process.env.ROLLUP_WATCH;
 
 function serve() {
-	let server;
+  let server;
 
-	function toExit() {
-		if (server) server.kill(0);
-	}
+  function toExit() {
+    if (server) server.kill(0);
+  }
 
-	return {
-		writeBundle() {
-			if (server) return;
-			server = require('child_process').spawn('npm', ['run', 'start', '--', '--dev'], {
-				stdio: ['ignore', 'inherit', 'inherit'],
-				shell: true
-			});
+  return {
+    writeBundle() {
+      if (server) return;
+      server = require('child_process').spawn(
+        'npm',
+        ['run', 'start', '--', '--dev'],
+        {
+          stdio: ['ignore', 'inherit', 'inherit'],
+          shell: true,
+        }
+      );
 
-			process.on('SIGTERM', toExit);
-			process.on('exit', toExit);
-		}
-	};
+      process.on('SIGTERM', toExit);
+      process.on('exit', toExit);
+    },
+  };
 }
 
 export default {
-  input : './src/main.js',
+  input: './src/main.js',
   output: {
-    file     : `./index.js`,
-    name     : GlobalName,
-    format   : 'umd',
-    sourcemap: false
+    file: `./index.js`,
+    name: GlobalName,
+    format: 'umd',
+    sourcemap: false,
   },
   plugins: [
     postcss({
-      inject  : false,
-      extract : './style.css',
+      inject: false,
+      extract: './style.css',
       minimize: true,
-      plugins : [autoprefixer()]
+      plugins: [autoprefixer()],
     }),
     json(),
     buble(),
     // In dev mode, call `npm run start` once
-		// the bundle has been generated
-		!production && serve(),
+    // the bundle has been generated
+    !production && serve(),
     !production && livereload('docs'),
-    production && uglify()
-  ]
+    production && uglify(),
+  ],
 };
