@@ -1,4 +1,2 @@
 node_modules
-src/**/*.html
 index.js
-*.eslintrc.js

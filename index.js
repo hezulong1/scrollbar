@@ -1,3 +1,5 @@
+
+(function(l, r) { if (l.getElementById('livereloadscript')) return; r = l.createElement('script'); r.async = 1; r.src = '//' + (window.location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1'; r.id = 'livereloadscript'; l.getElementsByTagName('head')[0].appendChild(r) })(window.document);
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
@@ -175,10 +177,22 @@
   }
 
   function getComputedStyle(elem, prop, pseudo) {
+    // code from jQuery
+    //
+    // Support: IE <=11+ (trac-14150)
+    // In IE popup's `window` is the opener window which makes `window.getComputedStyle( elem )`
+    // break. Using `elem.ownerDocument.defaultView` avoids the issue.
+    var view = elem.ownerDocument.defaultView;
+
+    // `document.implementation.createHTMLDocument( "" )` has a `null` `defaultView`
+    // property; check `defaultView` truthiness to fallback to window in such a case.
+    if ( !view ) {
+      view = window;
+    }
     // for older versions of Firefox, `getComputedStyle` required
     // the second argument and may return `null` for some elements
     // when `display: none`
-    var computedStyle = window.getComputedStyle(elem, pseudo || null) || {
+    var computedStyle = view.getComputedStyle(elem, pseudo || null) || {
       display: 'none'
     };
 

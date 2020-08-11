@@ -2,14 +2,36 @@
 
 import './style.less';
 
-import { merge, getScrollbarWidth, addClass, removeClass, cancelBubble, getComputedStyle, isFunction, isNode, isFirefox, isMobile, requestAnimationFrame, cancelAnimationFrame, supportPassive } from './utils';
-import { addListener as addResizeListener, removeListener as removeResizeListener } from './resize-detector';
+import {
+  merge,
+  getScrollbarWidth,
+  addClass,
+  removeClass,
+  cancelBubble,
+  getComputedStyle,
+  isFunction,
+  isNode,
+  isFirefox,
+  isMobile,
+  requestAnimationFrame,
+  cancelAnimationFrame,
+  supportPassive,
+} from './utils';
+import {
+  addListener as addResizeListener,
+  removeListener as removeResizeListener,
+} from './resize-detector';
 import { GlobalName, CLASSNAMES } from './const';
 
 // import scrollTo from './smooth-scroll';
 
-const WHEEL = 'onwheel' in document.body ? 'wheel' : document.onmousewheel !== undefined ? 'mousewheel' : 'DOMMouseScroll';
-const ENABLE_TRACK_SCROLL_SMOOTH = true
+const WHEEL =
+  'onwheel' in document.body
+    ? 'wheel'
+    : document.onmousewheel !== undefined
+    ? 'mousewheel'
+    : 'DOMMouseScroll';
+const ENABLE_TRACK_SCROLL_SMOOTH = true;
 
 class Scrollbar {
   constructor(options) {
@@ -38,7 +60,9 @@ class Scrollbar {
     // 记录值
     this._events = {};
     this._scrollbarWidth = getScrollbarWidth();
-    this._preventRenderTrack = isMobile || (this.forceRenderTrack === false && this._scrollbarWidth === 0);
+    this._preventRenderTrack =
+      isMobile ||
+      (this.forceRenderTrack === false && this._scrollbarWidth === 0);
     this._created = false;
     this._cursorDown = false;
     // 变化值
@@ -105,9 +129,15 @@ class Scrollbar {
       }
     } else {
       this.$view = this.element.querySelector('.' + CLASSNAMES.view);
-      this.$resizeObserver = this.$view.querySelector('.' + CLASSNAMES.resizeObserver);
-      this.$scrollbarX = this.element.querySelector('.' + CLASSNAMES.horizontalScrollbar.split(/\s/).join('.'));
-      this.$scrollbarY = this.element.querySelector('.' + CLASSNAMES.verticalScrollbar.split(/\s/).join('.'));
+      this.$resizeObserver = this.$view.querySelector(
+        '.' + CLASSNAMES.resizeObserver
+      );
+      this.$scrollbarX = this.element.querySelector(
+        '.' + CLASSNAMES.horizontalScrollbar.split(/\s/).join('.')
+      );
+      this.$scrollbarY = this.element.querySelector(
+        '.' + CLASSNAMES.verticalScrollbar.split(/\s/).join('.')
+      );
 
       if (this.$scrollbarX) {
         this.$sliderX = this.$scrollbarX.querySelector('.' + CLASSNAMES.thumb);
@@ -120,7 +150,8 @@ class Scrollbar {
 
     addClass(this.element, CLASSNAMES.element);
     this.forceRenderTrack && addClass(this.element, CLASSNAMES.force);
-    this._scrollbarWidth <= 0 && addClass(this.element, CLASSNAMES.hiddenDefault);
+    this._scrollbarWidth <= 0 &&
+      addClass(this.element, CLASSNAMES.hiddenDefault);
     this._preventRenderTrack && addClass(this.element, CLASSNAMES.prevented);
 
     if (this.horizontal === true) {
@@ -162,7 +193,7 @@ class Scrollbar {
 
     // fixed: padding
     const padding = getComputedStyle(this.element, 'padding');
-    if (!padding.split(' ').every(item => parseInt(item) === 0)) {
+    if (!padding.split(' ').every((item) => parseInt(item) === 0)) {
       this.$resizeObserver.style.padding = padding;
       this.element.style.cssText += ';padding: 0px !important;';
     }
@@ -170,8 +201,12 @@ class Scrollbar {
     removeClass(this.$scrollbarY, CLASSNAMES.invisible);
     removeClass(this.$scrollbarX, CLASSNAMES.invisible);
 
-    const naturalThumbSizeX = this.$view.clientWidth / this.$view.scrollWidth * this.$scrollbarX.offsetWidth;
-    const naturalThumbSizeY = this.$view.clientHeight / this.$view.scrollHeight * this.$scrollbarY.offsetHeight;
+    const naturalThumbSizeX =
+      (this.$view.clientWidth / this.$view.scrollWidth) *
+      this.$scrollbarX.offsetWidth;
+    const naturalThumbSizeY =
+      (this.$view.clientHeight / this.$view.scrollHeight) *
+      this.$scrollbarY.offsetHeight;
 
     this._scrollTopMax = this.$view.scrollHeight - this.$view.clientHeight;
     this._scrollLeftMax = this.$view.scrollWidth - this.$view.clientWidth;
@@ -193,8 +228,10 @@ class Scrollbar {
     }
     this.$sliderY.style.height = thumbSizeY + 'px';
 
-    this._trackTopMax = this.$scrollbarY.clientHeight - this.$sliderY.offsetHeight;
-    this._trackLeftMax = this.$scrollbarX.clientWidth - this.$sliderX.offsetWidth;
+    this._trackTopMax =
+      this.$scrollbarY.clientHeight - this.$sliderY.offsetHeight;
+    this._trackLeftMax =
+      this.$scrollbarX.clientWidth - this.$sliderX.offsetWidth;
 
     isFunction(this.onUpdate) && this.onUpdate();
 
@@ -214,7 +251,7 @@ class Scrollbar {
       CLASSNAMES.prevented,
       CLASSNAMES.hiddenDefault,
       CLASSNAMES.force,
-      CLASSNAMES.element
+      CLASSNAMES.element,
     ]);
 
     this._unbindEvents();
@@ -280,8 +317,10 @@ class Scrollbar {
     this.$shadowY = document.createElement('div');
     this.element.appendChild(this.$shadowX);
     this.element.appendChild(this.$shadowY);
-    this.$shadowX.className = CLASSNAMES.horizontalShadow + ' ' + CLASSNAMES.invisible;
-    this.$shadowY.className = CLASSNAMES.verticalShadow + ' ' + CLASSNAMES.invisible;
+    this.$shadowX.className =
+      CLASSNAMES.horizontalShadow + ' ' + CLASSNAMES.invisible;
+    this.$shadowY.className =
+      CLASSNAMES.verticalShadow + ' ' + CLASSNAMES.invisible;
   }
 
   _resizeHandler() {
@@ -297,27 +336,63 @@ class Scrollbar {
 
   _bindEvents() {
     this._events.scrollHandler = this._scrollHandler.bind(this);
-    this._events.clickHorizontalTrackHandler = this._clickTrackHandler(false).bind(this);
-    this._events.clickVerticalTrackHandler = this._clickTrackHandler(true).bind(this);
-    this._events.clickHorizontalThumbHandler = this._clickThumbHandler(false).bind(this);
-    this._events.clickVerticalThumbHandler = this._clickThumbHandler(true).bind(this);
-    this._events.mouseScrollTrackHandler = this._mouseScrollTrackHandler.bind(this);
-    this._events.mouseUpDocumentHandler = this._mouseUpDocumentHandler.bind(this);
-    this._events.mouseMoveDocumentHandler = this._mouseMoveDocumentHandler.bind(this);
+    this._events.clickHorizontalTrackHandler = this._clickTrackHandler(
+      false
+    ).bind(this);
+    this._events.clickVerticalTrackHandler = this._clickTrackHandler(true).bind(
+      this
+    );
+    this._events.clickHorizontalThumbHandler = this._clickThumbHandler(
+      false
+    ).bind(this);
+    this._events.clickVerticalThumbHandler = this._clickThumbHandler(true).bind(
+      this
+    );
+    this._events.mouseScrollTrackHandler = this._mouseScrollTrackHandler.bind(
+      this
+    );
+    this._events.mouseUpDocumentHandler = this._mouseUpDocumentHandler.bind(
+      this
+    );
+    this._events.mouseMoveDocumentHandler = this._mouseMoveDocumentHandler.bind(
+      this
+    );
 
     if (!isMobile && this.horizontal) {
-      this.$view.addEventListener(WHEEL, this._events.mouseScrollTrackHandler, supportPassive ? { capture: false, passive: false } : false); // { passive: true }
+      this.$view.addEventListener(
+        WHEEL,
+        this._events.mouseScrollTrackHandler,
+        supportPassive ? { capture: false, passive: false } : false
+      ); // { passive: true }
     } else {
       this.$view.addEventListener('scroll', this._events.scrollHandler);
     }
 
     if (this._preventRenderTrack === false) {
-      this.$scrollbarX.addEventListener('mousedown', this._events.clickHorizontalTrackHandler);
-      this.$scrollbarY.addEventListener('mousedown', this._events.clickVerticalTrackHandler);
-      this.$sliderX.addEventListener('mousedown', this._events.clickHorizontalThumbHandler);
-      this.$sliderY.addEventListener('mousedown', this._events.clickVerticalThumbHandler);
-      this.$scrollbarX.addEventListener(WHEEL, this._events.mouseScrollTrackHandler);
-      this.$scrollbarY.addEventListener(WHEEL, this._events.mouseScrollTrackHandler);
+      this.$scrollbarX.addEventListener(
+        'mousedown',
+        this._events.clickHorizontalTrackHandler
+      );
+      this.$scrollbarY.addEventListener(
+        'mousedown',
+        this._events.clickVerticalTrackHandler
+      );
+      this.$sliderX.addEventListener(
+        'mousedown',
+        this._events.clickHorizontalThumbHandler
+      );
+      this.$sliderY.addEventListener(
+        'mousedown',
+        this._events.clickVerticalThumbHandler
+      );
+      this.$scrollbarX.addEventListener(
+        WHEEL,
+        this._events.mouseScrollTrackHandler
+      );
+      this.$scrollbarY.addEventListener(
+        WHEEL,
+        this._events.mouseScrollTrackHandler
+      );
       document.addEventListener('mouseup', this._events.mouseUpDocumentHandler);
     }
 
@@ -329,22 +404,48 @@ class Scrollbar {
     this.$view.removeEventListener(WHEEL, this._events.mouseScrollTrackHandler);
 
     if (this._preventRenderTrack === false) {
-      this.$scrollbarY.removeEventListener('mousedown', this._events.clickVerticalTrackHandler);
-      this.$scrollbarX.removeEventListener('mousedown', this._events.clickHorizontalTrackHandler);
-      this.$sliderY.removeEventListener('mousedown', this._events.clickVerticalThumbHandler);
-      this.$sliderX.removeEventListener('mousedown', this._events.clickHorizontalThumbHandler);
-      this.$scrollbarY.removeEventListener(WHEEL, this._events.mouseScrollTrackHandler);
-      this.$scrollbarX.removeEventListener(WHEEL, this._events.mouseScrollTrackHandler);
-      document.removeEventListener('mouseup', this._events.mouseUpDocumentHandler);
-      document.removeEventListener('mousemove', this._events.mouseMoveDocumentHandler);
+      this.$scrollbarY.removeEventListener(
+        'mousedown',
+        this._events.clickVerticalTrackHandler
+      );
+      this.$scrollbarX.removeEventListener(
+        'mousedown',
+        this._events.clickHorizontalTrackHandler
+      );
+      this.$sliderY.removeEventListener(
+        'mousedown',
+        this._events.clickVerticalThumbHandler
+      );
+      this.$sliderX.removeEventListener(
+        'mousedown',
+        this._events.clickHorizontalThumbHandler
+      );
+      this.$scrollbarY.removeEventListener(
+        WHEEL,
+        this._events.mouseScrollTrackHandler
+      );
+      this.$scrollbarX.removeEventListener(
+        WHEEL,
+        this._events.mouseScrollTrackHandler
+      );
+      document.removeEventListener(
+        'mouseup',
+        this._events.mouseUpDocumentHandler
+      );
+      document.removeEventListener(
+        'mousemove',
+        this._events.mouseMoveDocumentHandler
+      );
     }
 
     return this;
   }
 
   _scrollHandler() {
-    const x = (this.$view.scrollLeft * this._trackLeftMax / this._scrollLeftMax) || 0;
-    const y = (this.$view.scrollTop * this._trackTopMax / this._scrollTopMax) || 0;
+    const x =
+      (this.$view.scrollLeft * this._trackLeftMax) / this._scrollLeftMax || 0;
+    const y =
+      (this.$view.scrollTop * this._trackTopMax) / this._scrollTopMax || 0;
 
     this.useShadow && this._setShadowStyle();
 
@@ -358,7 +459,8 @@ class Scrollbar {
       this.$sliderY.style.transform = `translate3d(0, ${y}px, 0)`;
     }
     // perf: 传入真实的 scrollTop / scrollLeft
-    isFunction(this.onScroll) && this.onScroll(this.$view.scrollLeft, this.$view.scrollTop);
+    isFunction(this.onScroll) &&
+      this.onScroll(this.$view.scrollLeft, this.$view.scrollTop);
   }
 
   _setShadowStyle() {
@@ -370,7 +472,10 @@ class Scrollbar {
       removeClass(this.$shadowY, CLASSNAMES.invisible);
     }
 
-    if (this.$view.scrollLeft >= this.$view.scrollWidth - this.$view.clientWidth) {
+    if (
+      this.$view.scrollLeft >=
+      this.$view.scrollWidth - this.$view.clientWidth
+    ) {
       removeClass(this.$shadowX, CLASSNAMES.visible);
       addClass(this.$shadowX, CLASSNAMES.invisible);
     } else {
@@ -384,7 +489,7 @@ class Scrollbar {
     let deltaY = 0;
 
     cancelBubble(e);
-    isFunction(e.preventDefault) ? e.preventDefault() : e.returnValue = false; // 阻止默认滚动行为，防止父级滚动
+    isFunction(e.preventDefault) ? e.preventDefault() : (e.returnValue = false); // 阻止默认滚动行为，防止父级滚动
 
     deltaY = e.deltaY || e.wheelDeltaY || -e.wheelDelta || 0;
     deltaX = e.deltaX || e.wheelDeltaX || 0;
@@ -445,18 +550,25 @@ class Scrollbar {
   }
 
   _clickTrackHandler(vertical) {
-    return e => {
+    return (e) => {
       let offset;
       let thumbPositionPercentage;
 
       if (vertical) {
-        offset = Math.abs(e.target.getBoundingClientRect().top - e.clientY) - this.$sliderY.offsetHeight / 2;
-        thumbPositionPercentage = offset * 100 / this.$scrollbarY.offsetHeight;
-        this.$view.scrollTop = thumbPositionPercentage * this.$view.scrollHeight / 100;
+        offset =
+          Math.abs(e.target.getBoundingClientRect().top - e.clientY) -
+          this.$sliderY.offsetHeight / 2;
+        thumbPositionPercentage =
+          (offset * 100) / this.$scrollbarY.offsetHeight;
+        this.$view.scrollTop =
+          (thumbPositionPercentage * this.$view.scrollHeight) / 100;
       } else {
-        offset = Math.abs(e.target.getBoundingClientRect().left - e.clientX) - this.$sliderX.offsetWidth / 2;
-        thumbPositionPercentage = offset * 100 / this.$scrollbarX.offsetWidth;
-        this.$view.scrollLeft = thumbPositionPercentage * this.$view.scrollWidth / 100;
+        offset =
+          Math.abs(e.target.getBoundingClientRect().left - e.clientX) -
+          this.$sliderX.offsetWidth / 2;
+        thumbPositionPercentage = (offset * 100) / this.$scrollbarX.offsetWidth;
+        this.$view.scrollLeft =
+          (thumbPositionPercentage * this.$view.scrollWidth) / 100;
       }
 
       this.horizontal === true && this._scrollHandler();
@@ -464,7 +576,7 @@ class Scrollbar {
   }
 
   _clickThumbHandler(vertical) {
-    return e => {
+    return (e) => {
       cancelBubble(e);
 
       if (e.ctrlKey || e.button === 2) {
@@ -476,9 +588,13 @@ class Scrollbar {
       this._startDrag(e);
 
       if (vertical) {
-        this._prevPageY = e.currentTarget.offsetHeight - (e.clientY - e.currentTarget.getBoundingClientRect().top);
+        this._prevPageY =
+          e.currentTarget.offsetHeight -
+          (e.clientY - e.currentTarget.getBoundingClientRect().top);
       } else {
-        this._prevPageX = e.currentTarget.offsetWidth - (e.clientX - e.currentTarget.getBoundingClientRect().left);
+        this._prevPageX =
+          e.currentTarget.offsetWidth -
+          (e.clientX - e.currentTarget.getBoundingClientRect().left);
       }
     };
   }
@@ -489,7 +605,10 @@ class Scrollbar {
     this._cursorDown = true;
     addClass(document.body, CLASSNAMES.unselect);
 
-    document.addEventListener('mousemove', this._events.mouseMoveDocumentHandler);
+    document.addEventListener(
+      'mousemove',
+      this._events.mouseMoveDocumentHandler
+    );
     document.onselectstart = () => false;
   }
 
@@ -501,7 +620,10 @@ class Scrollbar {
     removeClass(this.$sliderY, CLASSNAMES.active);
     removeClass(this.$sliderX, CLASSNAMES.active);
 
-    document.removeEventListener('mousemove', this._events.mouseMoveDocumentHandler);
+    document.removeEventListener(
+      'mousemove',
+      this._events.mouseMoveDocumentHandler
+    );
     document.onselectstart = null;
   }
 
@@ -513,7 +635,9 @@ class Scrollbar {
     if (this._prevPageY) {
       offset = e.clientY - this.$scrollbarY.getBoundingClientRect().top;
       thumbClickPosition = this.$sliderY.offsetHeight - this._prevPageY;
-      this.$view.scrollTop = this._scrollTopMax * (offset - thumbClickPosition) / this._trackTopMax;
+      this.$view.scrollTop =
+        (this._scrollTopMax * (offset - thumbClickPosition)) /
+        this._trackTopMax;
       this.horizontal === true && this._scrollHandler();
       return;
     }
@@ -521,7 +645,9 @@ class Scrollbar {
     if (this._prevPageX) {
       offset = e.clientX - this.$scrollbarX.getBoundingClientRect().left;
       thumbClickPosition = this.$sliderX.offsetWidth - this._prevPageX;
-      this.$view.scrollLeft = this._scrollLeftMax * (offset - thumbClickPosition) / this._trackLeftMax;
+      this.$view.scrollLeft =
+        (this._scrollLeftMax * (offset - thumbClickPosition)) /
+        this._trackLeftMax;
 
       this.horizontal === true && this._scrollHandler();
     }

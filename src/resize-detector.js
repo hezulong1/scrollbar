@@ -1,8 +1,15 @@
 // https://github.com/Justineo/resize-detector
 
-import { createStyles, requestAnimationFrame, cancelAnimationFrame, getComputedStyle, getRenderInfo } from './utils';
+import {
+  createStyles,
+  requestAnimationFrame,
+  cancelAnimationFrame,
+  getComputedStyle,
+  getRenderInfo,
+} from './utils';
 
-const css = '.resize-triggers{visibility:hidden;opacity:0}.resize-contract-trigger,.resize-contract-trigger:before,.resize-expand-trigger,.resize-triggers{content:"";position:absolute;top:0;left:0;height:100%;width:100%;overflow:hidden}.resize-contract-trigger,.resize-expand-trigger{background:#eee;overflow:auto}.resize-contract-trigger:before{width:200%;height:200%}';
+const css =
+  '.resize-triggers{visibility:hidden;opacity:0}.resize-contract-trigger,.resize-contract-trigger:before,.resize-expand-trigger,.resize-triggers{content:"";position:absolute;top:0;left:0;height:100%;width:100%;overflow:hidden}.resize-contract-trigger,.resize-expand-trigger{background:#eee;overflow:auto}.resize-contract-trigger:before{width:200%;height:200%}';
 
 let total = 0;
 let style = null;
@@ -23,7 +30,10 @@ export function addListener(elem, callback) {
       const ro = new ResizeObserver(() => {
         if (!elem.__resize_observer_triggered__) {
           elem.__resize_observer_triggered__ = true;
-          if (elem.offsetWidth === offsetWidth && elem.offsetHeight === offsetHeight) {
+          if (
+            elem.offsetWidth === offsetWidth &&
+            elem.offsetHeight === offsetHeight
+          ) {
             return;
           }
         }
@@ -32,7 +42,8 @@ export function addListener(elem, callback) {
 
       // initially display none won't trigger ResizeObserver callback
       const { detached, rendered } = getRenderInfo(elem);
-      elem.__resize_observer_triggered__ = detached === false && rendered === false;
+      elem.__resize_observer_triggered__ =
+        detached === false && rendered === false;
       elem.__resize_observer__ = ro;
       ro.observe(elem);
     } else if (elem.attachEvent && elem.addEventListener) {
@@ -41,7 +52,10 @@ export function addListener(elem, callback) {
         runCallbacks(elem);
       };
       elem.attachEvent('onresize', elem.__resize_legacy_resize_handler__);
-      document.addEventListener('DOMSubtreeModified', elem.__resize_mutation_handler__);
+      document.addEventListener(
+        'DOMSubtreeModified',
+        elem.__resize_mutation_handler__
+      );
     } else {
       if (!total) {
         style = createStyles(css);
@@ -52,10 +66,10 @@ export function addListener(elem, callback) {
       if (window.MutationObserver) {
         const mo = new MutationObserver(elem.__resize_mutation_handler__);
         mo.observe(document, {
-          attributes   : true,
-          childList    : true,
+          attributes: true,
+          childList: true,
           characterData: true,
-          subtree      : true
+          subtree: true,
         });
         elem.__resize_mutation_observer__ = mo;
       }
@@ -81,7 +95,10 @@ export function removeListener(elem, callback) {
     // targeting IE9/10
     if (elem.detachEvent && elem.removeEventListener) {
       elem.detachEvent('onresize', elem.__resize_legacy_resize_handler__);
-      document.removeEventListener('DOMSubtreeModified', elem.__resize_mutation_handler__);
+      document.removeEventListener(
+        'DOMSubtreeModified',
+        elem.__resize_mutation_handler__
+      );
       return;
     }
 
@@ -111,8 +128,8 @@ function getUpdatedSize(elem) {
   const { offsetWidth, offsetHeight } = elem;
   if (offsetWidth !== width || offsetHeight !== height) {
     return {
-      width : offsetWidth,
-      height: offsetHeight
+      width: offsetWidth,
+      height: offsetHeight,
     };
   }
   return null;
@@ -150,7 +167,7 @@ function runCallbacks(elem) {
   if (!elem || !elem.__resize_listeners__) {
     return;
   }
-  elem.__resize_listeners__.forEach(callback => {
+  elem.__resize_listeners__.forEach((callback) => {
     callback.call(elem, elem);
   });
 }
@@ -182,15 +199,15 @@ function initTriggers(elem) {
     triggers,
     expand,
     expandChild,
-    contract
+    contract,
   };
 
   resetTriggers(elem);
   elem.addEventListener('scroll', handleScroll, true);
 
   elem.__resize_last__ = {
-    width : elem.offsetWidth,
-    height: elem.offsetHeight
+    width: elem.offsetWidth,
+    height: elem.offsetHeight,
   };
 }
 
@@ -199,7 +216,12 @@ function resetTriggers(elem) {
 
   // batch read
   const { scrollWidth: csw, scrollHeight: csh } = contract;
-  const { offsetWidth: eow, offsetHeight: eoh, scrollWidth: esw, scrollHeight: esh } = expand;
+  const {
+    offsetWidth: eow,
+    offsetHeight: eoh,
+    scrollWidth: esw,
+    scrollHeight: esh,
+  } = expand;
 
   // batch write
   contract.scrollLeft = csw;

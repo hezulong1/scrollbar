@@ -64,15 +64,15 @@ $unselect: is-unselect;
     width: 0;
     height: 0;
     border-radius: inherit;
-    background-color: rgba($background, .5);
+    background-color: rgba($background, 0.5);
     box-sizing: border-box;
 
     &:hover {
-      background-color: rgba($background, .6);
+      background-color: rgba($background, 0.6);
     }
 
     &:active {
-      background-color: rgba($background, .75);
+      background-color: rgba($background, 0.75);
     }
   }
 
@@ -83,7 +83,7 @@ $unselect: is-unselect;
   .#{$track}.#{$h} .#{$thumb} {
     height: 100%;
   }
-  
+
   // Shadow
   .#{$shadow} {
     position: absolute;
@@ -99,7 +99,8 @@ $unselect: is-unselect;
       height: 100%;
 
       &.#{$show} {
-        box-shadow: inset $black -1 * $shadow-size 0 $shadow-size -1 * $shadow-size;
+        box-shadow: inset $black -1 * $shadow-size 0 $shadow-size -1 *
+          $shadow-size;
       }
     }
 
