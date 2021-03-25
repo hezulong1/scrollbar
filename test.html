@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>UiScrollbar</title>
+    <title>UiScrollbar1</title>
     <link rel="stylesheet" href="style.css">
     <style>
       body {
@@ -10,7 +10,7 @@
         color: #abb2bf;
         font-family: "Fira Code", "Source Code Pro", Consolas, "Courier New", monospace;
       }
-      
+
       html {
         height: 100%;
       }
@@ -21,7 +21,7 @@
       } */
     </style>
   </head>
-  
+
   <body>
     <button type="button" onclick="create()">create</button>
     <button type="button" onclick="destroy()">destroy</button>
@@ -40,7 +40,7 @@
     <button type="button" onclick="goTop()">top</button>
     <button type="button" onclick="doHide()">hide</button>
     <button type="button" onclick="doBigger()">bigger</button>
-    
+
     <script src="./index.js"></script>
     <script>
       var element = document.getElementById('scrollable-element');
@@ -58,7 +58,7 @@
       render(10)
 
 
-      
+
       var scrollbar = new Scrollbar({
         element: element,
         onResize: function() {
@@ -82,14 +82,14 @@
           if (index >= 5 && index < 9) {
             item.style.display = isHide ? 'none' : '';
           }
-          
+
         })
       }
-      
+
       function doBigger() {
         element.querySelector('p').style.width = (parseInt(Math.random() * 1000) + 451) + 'px';
       }
-      
+
       function create() {
         scrollbar.create()
       }
@@ -101,7 +101,7 @@
       function goTop() {
         scrollbar.getViewElement().scrollTop = 0;
       }
-	  
+
     </script>
   </body>
 </html>
