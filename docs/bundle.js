@@ -10,27 +10,28 @@
   }
   var userAgent = navigator.userAgent.toLowerCase();
 
-  var isFirefox = (userAgent.indexOf('firefox') >= 0);
-  var isAndroid = (userAgent.indexOf('android') >= 0);
+  var isFirefox = userAgent.indexOf('firefox') >= 0;
+  var isAndroid = userAgent.indexOf('android') >= 0;
   var isOS = /(iphone|ipad|ipod|ios)/.test(userAgent);
-  var isWindowsPhone = (userAgent.indexOf('windows phone') >= 0);
-  var isSymbianos = (userAgent.indexOf('symbianos') >= 0);
+  var isWindowsPhone = userAgent.indexOf('windows phone') >= 0;
+  var isSymbianos = userAgent.indexOf('symbianos') >= 0;
   var isMobile = isAndroid || isOS || isWindowsPhone || isSymbianos;
 
-  var supportPassive = (function() {
+  var supportPassive = (function () {
     var _passive = false;
     try {
       var opts = {};
-      Object.defineProperty(opts, 'passive', ({
+      Object.defineProperty(opts, 'passive', {
+        // eslint-disable-next-line getter-return
         get: function get() {
           _passive = true;
         }
-      }));
+      });
       window.addEventListener('test-passive', null, opts);
     } catch (e) {
       _passive = false;
     }
-    return _passive
+    return _passive;
   })();
 
   function merge() {
@@ -38,7 +39,7 @@
 
     for (var i = 1; i < arguments.length; i++) {
       for (var key in arguments[i]) {
-        if (arguments$1[i].hasOwnProperty(key)) {
+        if (Object.prototype.hasOwnProperty.call(arguments$1[i], key)) {
           arguments$1[0][key] = arguments$1[i][key];
         }
       }
@@ -47,7 +48,7 @@
   }
 
   var scrollbarWidth;
-  var getScrollbarWidth = function() {
+  var getScrollbarWidth = function () {
     if (scrollbarWidth !== undefined) { return scrollbarWidth; }
     var e = document.createElement('div');
     e.style.position = 'absolute';
@@ -61,7 +62,7 @@
     return scrollbarWidth;
   };
 
-  var cancelBubble = function(event) {
+  var cancelBubble = function (event) {
     if (!event) { event = window.event; }
 
     if (isFunction(event.stopPropagation)) {
@@ -92,7 +93,9 @@
   function addClass(element, classNames) {
     if (!element || !classNames) { return; }
 
-    var array = Array.isArray(classNames) ? classNames : trim(classNames).split(/\s/);
+    var array = Array.isArray(classNames)
+      ? classNames
+      : trim(classNames).split(/\s/);
     var len = array.length;
 
     for (var i = 0; i < len; i++) {
@@ -111,7 +114,9 @@
   function removeClass(element, classNames) {
     if (!element || !classNames) { return; }
 
-    var array = Array.isArray(classNames) ? classNames : trim(classNames).split(/\s/);
+    var array = Array.isArray(classNames)
+      ? classNames
+      : trim(classNames).split(/\s/);
     var len = array.length;
 
     for (var i = 0; i < len; i++) {
@@ -121,7 +126,10 @@
         if (element.classList) {
           element.classList.remove(className);
         } else {
-          element.className = (" " + (element.className) + " ").replace((" " + className + " "), ' ');
+          element.className = (" " + (element.className) + " ").replace(
+            (" " + className + " "),
+            ' '
+          );
           element.className = trim(element.className);
         }
       }
@@ -135,7 +143,7 @@
         window.requestAnimationFrame ||
         window.webkitRequestAnimationFrame ||
         window.mozRequestAnimationFrame ||
-        function(callback) {
+        function (callback) {
           return setTimeout(callback, 16);
         }
       ).bind(window);
@@ -150,7 +158,7 @@
         window.cancelAnimationFrame ||
         window.webkitCancelAnimationFrame ||
         window.mozCancelAnimationFrame ||
-        function(id) {
+        function (id) {
           clearTimeout(id);
         }
       ).bind(window);
@@ -172,10 +180,22 @@
   }
 
   function getComputedStyle(elem, prop, pseudo) {
+    // code from jQuery
+    //
+    // Support: IE <=11+ (trac-14150)
+    // In IE popup's `window` is the opener window which makes `window.getComputedStyle( elem )`
+    // break. Using `elem.ownerDocument.defaultView` avoids the issue.
+    var view = elem.ownerDocument.defaultView;
+
+    // `document.implementation.createHTMLDocument( "" )` has a `null` `defaultView`
+    // property; check `defaultView` truthiness to fallback to window in such a case.
+    if (!view) {
+      view = window;
+    }
     // for older versions of Firefox, `getComputedStyle` required
     // the second argument and may return `null` for some elements
     // when `display: none`
-    var computedStyle = window.getComputedStyle(elem, pseudo || null) || {
+    var computedStyle = view.getComputedStyle(elem, pseudo || null) || {
       display: 'none'
     };
 
@@ -209,7 +229,8 @@
 
   // https://github.com/Justineo/resize-detector
 
-  var css = '.resize-triggers{visibility:hidden;opacity:0}.resize-contract-trigger,.resize-contract-trigger:before,.resize-expand-trigger,.resize-triggers{content:"";position:absolute;top:0;left:0;height:100%;width:100%;overflow:hidden}.resize-contract-trigger,.resize-expand-trigger{background:#eee;overflow:auto}.resize-contract-trigger:before{width:200%;height:200%}';
+  var css =
+    '.resize-triggers{visibility:hidden;opacity:0}.resize-contract-trigger,.resize-contract-trigger:before,.resize-expand-trigger,.resize-triggers{content:"";position:absolute;top:0;left:0;height:100%;width:100%;overflow:hidden}.resize-contract-trigger,.resize-expand-trigger{background:#eee;overflow:auto}.resize-contract-trigger:before{width:200%;height:200%}';
 
   var total = 0;
   var style = null;
@@ -231,7 +252,10 @@
         var ro = new ResizeObserver(function () {
           if (!elem.__resize_observer_triggered__) {
             elem.__resize_observer_triggered__ = true;
-            if (elem.offsetWidth === offsetWidth && elem.offsetHeight === offsetHeight) {
+            if (
+              elem.offsetWidth === offsetWidth &&
+              elem.offsetHeight === offsetHeight
+            ) {
               return;
             }
           }
@@ -242,7 +266,8 @@
         var ref = getRenderInfo(elem);
         var detached = ref.detached;
         var rendered = ref.rendered;
-        elem.__resize_observer_triggered__ = detached === false && rendered === false;
+        elem.__resize_observer_triggered__ =
+          detached === false && rendered === false;
         elem.__resize_observer__ = ro;
         ro.observe(elem);
       } else if (elem.attachEvent && elem.addEventListener) {
@@ -251,7 +276,10 @@
           runCallbacks(elem);
         };
         elem.attachEvent('onresize', elem.__resize_legacy_resize_handler__);
-        document.addEventListener('DOMSubtreeModified', elem.__resize_mutation_handler__);
+        document.addEventListener(
+          'DOMSubtreeModified',
+          elem.__resize_mutation_handler__
+        );
       } else {
         if (!total) {
           style = createStyles(css);
@@ -262,10 +290,10 @@
         if (window.MutationObserver) {
           var mo = new MutationObserver(elem.__resize_mutation_handler__);
           mo.observe(document, {
-            attributes   : true,
-            childList    : true,
+            attributes: true,
+            childList: true,
             characterData: true,
-            subtree      : true
+            subtree: true
           });
           elem.__resize_mutation_observer__ = mo;
         }
@@ -291,7 +319,10 @@
       // targeting IE9/10
       if (elem.detachEvent && elem.removeEventListener) {
         elem.detachEvent('onresize', elem.__resize_legacy_resize_handler__);
-        document.removeEventListener('DOMSubtreeModified', elem.__resize_mutation_handler__);
+        document.removeEventListener(
+          'DOMSubtreeModified',
+          elem.__resize_mutation_handler__
+        );
         return;
       }
 
@@ -324,7 +355,7 @@
     var offsetHeight = elem.offsetHeight;
     if (offsetWidth !== width || offsetHeight !== height) {
       return {
-        width : offsetWidth,
+        width: offsetWidth,
         height: offsetHeight
       };
     }
@@ -406,7 +437,7 @@
     elem.addEventListener('scroll', handleScroll, true);
 
     elem.__resize_last__ = {
-      width : elem.offsetWidth,
+      width: elem.offsetWidth,
       height: elem.offsetHeight
     };
   }
@@ -437,30 +468,35 @@
   var GlobalName = 'Scrollbar';
 
   var CLASSNAMES = {
-    element            : 'scrollable-wrapper',
-    view               : 'view',
+    element: 'scrollable-wrapper',
+    view: 'view',
     horizontalScrollbar: 'scrollbar is-horizontal',
-    verticalScrollbar  : 'scrollbar is-vertical',
-    thumb              : 'thumb',
-    horizontalShadow   : 'shadow is-horizontal',
-    verticalShadow     : 'shadow is-vertical',
-    resizeObserver     : 'resize-observer',
-    horizontal         : 'is-horizontal',
-    unselect           : 'is-unselect',
-    prevented          : 'is-default',
-    visible            : 'is-visible',
-    invisible          : 'is-invisible',
-    active             : 'is-active',
-    force              : 'is-force-render',
-    hiddenDefault      : 'is-hidden-default',
-    observed           : 'is-observed'
+    verticalScrollbar: 'scrollbar is-vertical',
+    thumb: 'thumb',
+    horizontalShadow: 'shadow is-horizontal',
+    verticalShadow: 'shadow is-vertical',
+    resizeObserver: 'resize-observer',
+    horizontal: 'is-horizontal',
+    unselect: 'is-unselect',
+    prevented: 'is-default',
+    visible: 'is-visible',
+    invisible: 'is-invisible',
+    active: 'is-active',
+    force: 'is-force-render',
+    hiddenDefault: 'is-hidden-default',
+    observed: 'is-observed'
   };
 
   // reference https://github.com/noeldelgado/gemini-scrollbar/blob/master/index.js
 
   // import scrollTo from './smooth-scroll';
 
-  var WHEEL = 'onwheel' in document.body ? 'wheel' : document.onmousewheel !== undefined ? 'mousewheel' : 'DOMMouseScroll';
+  var WHEEL =
+    'onwheel' in document.body
+      ? 'wheel'
+      : document.onmousewheel !== undefined
+      ? 'mousewheel'
+      : 'DOMMouseScroll';
 
   var Scrollbar = function Scrollbar(options) {
     if (isNode(options)) {
@@ -488,7 +524,9 @@
     // 记录值
     this._events = {};
     this._scrollbarWidth = getScrollbarWidth();
-    this._preventRenderTrack = isMobile || (this.forceRenderTrack === false && this._scrollbarWidth === 0);
+    this._preventRenderTrack =
+      isMobile ||
+      (this.forceRenderTrack === false && this._scrollbarWidth === 0);
     this._created = false;
     this._cursorDown = false;
     // 变化值
@@ -555,9 +593,15 @@
       }
     } else {
       this.$view = this.element.querySelector('.' + CLASSNAMES.view);
-      this.$resizeObserver = this.$view.querySelector('.' + CLASSNAMES.resizeObserver);
-      this.$scrollbarX = this.element.querySelector('.' + CLASSNAMES.horizontalScrollbar.split(/\s/).join('.'));
-      this.$scrollbarY = this.element.querySelector('.' + CLASSNAMES.verticalScrollbar.split(/\s/).join('.'));
+      this.$resizeObserver = this.$view.querySelector(
+        '.' + CLASSNAMES.resizeObserver
+      );
+      this.$scrollbarX = this.element.querySelector(
+        '.' + CLASSNAMES.horizontalScrollbar.split(/\s/).join('.')
+      );
+      this.$scrollbarY = this.element.querySelector(
+        '.' + CLASSNAMES.verticalScrollbar.split(/\s/).join('.')
+      );
 
       if (this.$scrollbarX) {
         this.$sliderX = this.$scrollbarX.querySelector('.' + CLASSNAMES.thumb);
@@ -570,7 +614,8 @@
 
     addClass(this.element, CLASSNAMES.element);
     this.forceRenderTrack && addClass(this.element, CLASSNAMES.force);
-    this._scrollbarWidth <= 0 && addClass(this.element, CLASSNAMES.hiddenDefault);
+    this._scrollbarWidth <= 0 &&
+      addClass(this.element, CLASSNAMES.hiddenDefault);
     this._preventRenderTrack && addClass(this.element, CLASSNAMES.prevented);
 
     if (this.horizontal === true) {
@@ -620,8 +665,12 @@
     removeClass(this.$scrollbarY, CLASSNAMES.invisible);
     removeClass(this.$scrollbarX, CLASSNAMES.invisible);
 
-    var naturalThumbSizeX = this.$view.clientWidth / this.$view.scrollWidth * this.$scrollbarX.offsetWidth;
-    var naturalThumbSizeY = this.$view.clientHeight / this.$view.scrollHeight * this.$scrollbarY.offsetHeight;
+    var naturalThumbSizeX =
+      (this.$view.clientWidth / this.$view.scrollWidth) *
+      this.$scrollbarX.offsetWidth;
+    var naturalThumbSizeY =
+      (this.$view.clientHeight / this.$view.scrollHeight) *
+      this.$scrollbarY.offsetHeight;
 
     this._scrollTopMax = this.$view.scrollHeight - this.$view.clientHeight;
     this._scrollLeftMax = this.$view.scrollWidth - this.$view.clientWidth;
@@ -643,8 +692,10 @@
     }
     this.$sliderY.style.height = thumbSizeY + 'px';
 
-    this._trackTopMax = this.$scrollbarY.clientHeight - this.$sliderY.offsetHeight;
-    this._trackLeftMax = this.$scrollbarX.clientWidth - this.$sliderX.offsetWidth;
+    this._trackTopMax =
+      this.$scrollbarY.clientHeight - this.$sliderY.offsetHeight;
+    this._trackLeftMax =
+      this.$scrollbarX.clientWidth - this.$sliderX.offsetWidth;
 
     isFunction(this.onUpdate) && this.onUpdate();
 
@@ -730,44 +781,82 @@
     this.$shadowY = document.createElement('div');
     this.element.appendChild(this.$shadowX);
     this.element.appendChild(this.$shadowY);
-    this.$shadowX.className = CLASSNAMES.horizontalShadow + ' ' + CLASSNAMES.invisible;
-    this.$shadowY.className = CLASSNAMES.verticalShadow + ' ' + CLASSNAMES.invisible;
+    this.$shadowX.className =
+      CLASSNAMES.horizontalShadow + ' ' + CLASSNAMES.invisible;
+    this.$shadowY.className =
+      CLASSNAMES.verticalShadow + ' ' + CLASSNAMES.invisible;
   };
 
   Scrollbar.prototype._resizeHandler = function _resizeHandler () {
     // 浏览器缩放，需要重新计算
     // 无须考虑特殊情况，浏览器已经处理好了
-    var ratio = window.devicePixelRatio || 1;
-    if (ratio) {
-      this._scrollbarWidth = getScrollbarWidth() / ratio;
-    }
+    // const ratio = window.devicePixelRatio || 1;
+    // if (ratio) {
+    // this._scrollbarWidth = getScrollbarWidth() / ratio;
+    // }
     this.update();
     isFunction(this.onResize) && this.onResize();
   };
 
   Scrollbar.prototype._bindEvents = function _bindEvents () {
     this._events.scrollHandler = this._scrollHandler.bind(this);
-    this._events.clickHorizontalTrackHandler = this._clickTrackHandler(false).bind(this);
-    this._events.clickVerticalTrackHandler = this._clickTrackHandler(true).bind(this);
-    this._events.clickHorizontalThumbHandler = this._clickThumbHandler(false).bind(this);
-    this._events.clickVerticalThumbHandler = this._clickThumbHandler(true).bind(this);
-    this._events.mouseScrollTrackHandler = this._mouseScrollTrackHandler.bind(this);
-    this._events.mouseUpDocumentHandler = this._mouseUpDocumentHandler.bind(this);
-    this._events.mouseMoveDocumentHandler = this._mouseMoveDocumentHandler.bind(this);
+    this._events.clickHorizontalTrackHandler = this._clickTrackHandler(
+      false
+    ).bind(this);
+    this._events.clickVerticalTrackHandler = this._clickTrackHandler(true).bind(
+      this
+    );
+    this._events.clickHorizontalThumbHandler = this._clickThumbHandler(
+      false
+    ).bind(this);
+    this._events.clickVerticalThumbHandler = this._clickThumbHandler(true).bind(
+      this
+    );
+    this._events.mouseScrollTrackHandler = this._mouseScrollTrackHandler.bind(
+      this
+    );
+    this._events.mouseUpDocumentHandler = this._mouseUpDocumentHandler.bind(
+      this
+    );
+    this._events.mouseMoveDocumentHandler = this._mouseMoveDocumentHandler.bind(
+      this
+    );
 
     if (!isMobile && this.horizontal) {
-      this.$view.addEventListener(WHEEL, this._events.mouseScrollTrackHandler, supportPassive ? { capture: false, passive: false } : false); // { passive: true }
+      this.$view.addEventListener(
+        WHEEL,
+        this._events.mouseScrollTrackHandler,
+        supportPassive ? { capture: false, passive: false } : false
+      ); // { passive: true }
     } else {
       this.$view.addEventListener('scroll', this._events.scrollHandler);
     }
 
     if (this._preventRenderTrack === false) {
-      this.$scrollbarX.addEventListener('mousedown', this._events.clickHorizontalTrackHandler);
-      this.$scrollbarY.addEventListener('mousedown', this._events.clickVerticalTrackHandler);
-      this.$sliderX.addEventListener('mousedown', this._events.clickHorizontalThumbHandler);
-      this.$sliderY.addEventListener('mousedown', this._events.clickVerticalThumbHandler);
-      this.$scrollbarX.addEventListener(WHEEL, this._events.mouseScrollTrackHandler);
-      this.$scrollbarY.addEventListener(WHEEL, this._events.mouseScrollTrackHandler);
+      this.$scrollbarX.addEventListener(
+        'mousedown',
+        this._events.clickHorizontalTrackHandler
+      );
+      this.$scrollbarY.addEventListener(
+        'mousedown',
+        this._events.clickVerticalTrackHandler
+      );
+      this.$sliderX.addEventListener(
+        'mousedown',
+        this._events.clickHorizontalThumbHandler
+      );
+      this.$sliderY.addEventListener(
+        'mousedown',
+        this._events.clickVerticalThumbHandler
+      );
+      this.$scrollbarX.addEventListener(
+        WHEEL,
+        this._events.mouseScrollTrackHandler
+      );
+      this.$scrollbarY.addEventListener(
+        WHEEL,
+        this._events.mouseScrollTrackHandler
+      );
       document.addEventListener('mouseup', this._events.mouseUpDocumentHandler);
     }
 
@@ -779,22 +868,48 @@
     this.$view.removeEventListener(WHEEL, this._events.mouseScrollTrackHandler);
 
     if (this._preventRenderTrack === false) {
-      this.$scrollbarY.removeEventListener('mousedown', this._events.clickVerticalTrackHandler);
-      this.$scrollbarX.removeEventListener('mousedown', this._events.clickHorizontalTrackHandler);
-      this.$sliderY.removeEventListener('mousedown', this._events.clickVerticalThumbHandler);
-      this.$sliderX.removeEventListener('mousedown', this._events.clickHorizontalThumbHandler);
-      this.$scrollbarY.removeEventListener(WHEEL, this._events.mouseScrollTrackHandler);
-      this.$scrollbarX.removeEventListener(WHEEL, this._events.mouseScrollTrackHandler);
-      document.removeEventListener('mouseup', this._events.mouseUpDocumentHandler);
-      document.removeEventListener('mousemove', this._events.mouseMoveDocumentHandler);
+      this.$scrollbarY.removeEventListener(
+        'mousedown',
+        this._events.clickVerticalTrackHandler
+      );
+      this.$scrollbarX.removeEventListener(
+        'mousedown',
+        this._events.clickHorizontalTrackHandler
+      );
+      this.$sliderY.removeEventListener(
+        'mousedown',
+        this._events.clickVerticalThumbHandler
+      );
+      this.$sliderX.removeEventListener(
+        'mousedown',
+        this._events.clickHorizontalThumbHandler
+      );
+      this.$scrollbarY.removeEventListener(
+        WHEEL,
+        this._events.mouseScrollTrackHandler
+      );
+      this.$scrollbarX.removeEventListener(
+        WHEEL,
+        this._events.mouseScrollTrackHandler
+      );
+      document.removeEventListener(
+        'mouseup',
+        this._events.mouseUpDocumentHandler
+      );
+      document.removeEventListener(
+        'mousemove',
+        this._events.mouseMoveDocumentHandler
+      );
     }
 
     return this;
   };
 
   Scrollbar.prototype._scrollHandler = function _scrollHandler () {
-    var x = (this.$view.scrollLeft * this._trackLeftMax / this._scrollLeftMax) || 0;
-    var y = (this.$view.scrollTop * this._trackTopMax / this._scrollTopMax) || 0;
+    var x =
+      (this.$view.scrollLeft * this._trackLeftMax) / this._scrollLeftMax || 0;
+    var y =
+      (this.$view.scrollTop * this._trackTopMax) / this._scrollTopMax || 0;
 
     this.useShadow && this._setShadowStyle();
 
@@ -808,7 +923,8 @@
       this.$sliderY.style.transform = "translate3d(0, " + y + "px, 0)";
     }
     // perf: 传入真实的 scrollTop / scrollLeft
-    isFunction(this.onScroll) && this.onScroll(this.$view.scrollLeft, this.$view.scrollTop);
+    isFunction(this.onScroll) &&
+      this.onScroll(this.$view.scrollLeft, this.$view.scrollTop);
   };
 
   Scrollbar.prototype._setShadowStyle = function _setShadowStyle () {
@@ -820,7 +936,10 @@
       removeClass(this.$shadowY, CLASSNAMES.invisible);
     }
 
-    if (this.$view.scrollLeft >= this.$view.scrollWidth - this.$view.clientWidth) {
+    if (
+      this.$view.scrollLeft >=
+      this.$view.scrollWidth - this.$view.clientWidth
+    ) {
       removeClass(this.$shadowX, CLASSNAMES.visible);
       addClass(this.$shadowX, CLASSNAMES.invisible);
     } else {
@@ -837,7 +956,7 @@
     var deltaY = 0;
 
     cancelBubble(e);
-    isFunction(e.preventDefault) ? e.preventDefault() : e.returnValue = false; // 阻止默认滚动行为，防止父级滚动
+    isFunction(e.preventDefault) ? e.preventDefault() : (e.returnValue = false); // 阻止默认滚动行为，防止父级滚动
 
     deltaY = e.deltaY || e.wheelDeltaY || -e.wheelDelta || 0;
     deltaX = e.deltaX || e.wheelDeltaX || 0;
@@ -901,13 +1020,20 @@
       var thumbPositionPercentage;
 
       if (vertical) {
-        offset = Math.abs(e.target.getBoundingClientRect().top - e.clientY) - this$1.$sliderY.offsetHeight / 2;
-        thumbPositionPercentage = offset * 100 / this$1.$scrollbarY.offsetHeight;
-        this$1.$view.scrollTop = thumbPositionPercentage * this$1.$view.scrollHeight / 100;
+        offset =
+          Math.abs(e.target.getBoundingClientRect().top - e.clientY) -
+          this$1.$sliderY.offsetHeight / 2;
+        thumbPositionPercentage =
+          (offset * 100) / this$1.$scrollbarY.offsetHeight;
+        this$1.$view.scrollTop =
+          (thumbPositionPercentage * this$1.$view.scrollHeight) / 100;
       } else {
-        offset = Math.abs(e.target.getBoundingClientRect().left - e.clientX) - this$1.$sliderX.offsetWidth / 2;
-        thumbPositionPercentage = offset * 100 / this$1.$scrollbarX.offsetWidth;
-        this$1.$view.scrollLeft = thumbPositionPercentage * this$1.$view.scrollWidth / 100;
+        offset =
+          Math.abs(e.target.getBoundingClientRect().left - e.clientX) -
+          this$1.$sliderX.offsetWidth / 2;
+        thumbPositionPercentage = (offset * 100) / this$1.$scrollbarX.offsetWidth;
+        this$1.$view.scrollLeft =
+          (thumbPositionPercentage * this$1.$view.scrollWidth) / 100;
       }
 
       this$1.horizontal === true && this$1._scrollHandler();
@@ -929,9 +1055,13 @@
       this$1._startDrag(e);
 
       if (vertical) {
-        this$1._prevPageY = e.currentTarget.offsetHeight - (e.clientY - e.currentTarget.getBoundingClientRect().top);
+        this$1._prevPageY =
+          e.currentTarget.offsetHeight -
+          (e.clientY - e.currentTarget.getBoundingClientRect().top);
       } else {
-        this$1._prevPageX = e.currentTarget.offsetWidth - (e.clientX - e.currentTarget.getBoundingClientRect().left);
+        this$1._prevPageX =
+          e.currentTarget.offsetWidth -
+          (e.clientX - e.currentTarget.getBoundingClientRect().left);
       }
     };
   };
@@ -942,7 +1072,10 @@
     this._cursorDown = true;
     addClass(document.body, CLASSNAMES.unselect);
 
-    document.addEventListener('mousemove', this._events.mouseMoveDocumentHandler);
+    document.addEventListener(
+      'mousemove',
+      this._events.mouseMoveDocumentHandler
+    );
     document.onselectstart = function () { return false; };
   };
 
@@ -954,7 +1087,10 @@
     removeClass(this.$sliderY, CLASSNAMES.active);
     removeClass(this.$sliderX, CLASSNAMES.active);
 
-    document.removeEventListener('mousemove', this._events.mouseMoveDocumentHandler);
+    document.removeEventListener(
+      'mousemove',
+      this._events.mouseMoveDocumentHandler
+    );
     document.onselectstart = null;
   };
 
@@ -966,7 +1102,9 @@
     if (this._prevPageY) {
       offset = e.clientY - this.$scrollbarY.getBoundingClientRect().top;
       thumbClickPosition = this.$sliderY.offsetHeight - this._prevPageY;
-      this.$view.scrollTop = this._scrollTopMax * (offset - thumbClickPosition) / this._trackTopMax;
+      this.$view.scrollTop =
+        (this._scrollTopMax * (offset - thumbClickPosition)) /
+        this._trackTopMax;
       this.horizontal === true && this._scrollHandler();
       return;
     }
@@ -974,7 +1112,9 @@
     if (this._prevPageX) {
       offset = e.clientX - this.$scrollbarX.getBoundingClientRect().left;
       thumbClickPosition = this.$sliderX.offsetWidth - this._prevPageX;
-      this.$view.scrollLeft = this._scrollLeftMax * (offset - thumbClickPosition) / this._trackLeftMax;
+      this.$view.scrollLeft =
+        (this._scrollLeftMax * (offset - thumbClickPosition)) /
+        this._trackLeftMax;
 
       this.horizontal === true && this._scrollHandler();
     }

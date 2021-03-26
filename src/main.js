@@ -326,10 +326,10 @@ class Scrollbar {
   _resizeHandler() {
     // 浏览器缩放，需要重新计算
     // 无须考虑特殊情况，浏览器已经处理好了
-    const ratio = window.devicePixelRatio || 1;
-    if (ratio) {
-      this._scrollbarWidth = getScrollbarWidth() / ratio;
-    }
+    // const ratio = window.devicePixelRatio || 1;
+    // if (ratio) {
+    //   this._scrollbarWidth = getScrollbarWidth() / ratio;
+    // }
     this.update();
     isFunction(this.onResize) && this.onResize();
   }
